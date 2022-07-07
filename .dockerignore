@@ -1,0 +1,10 @@
+node_modules/
+venv/
+package.json
+package_lock.json
+styles.scss
+webpack.config.js
+bundle.js
+.idea/
+static/
+media/

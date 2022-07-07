@@ -1,0 +1,138 @@
+{% extends "admin/change_form.html" %}
+
+{% load i18n static admin_urls %}
+
+{% block after_related_objects %}
+
+<div
+        id="map-container"
+        style="border: 1px solid #e5e5e5; background-color: #fafafa;"
+></div>
+
+<script>
+    const sceneWidth = 1920;
+    const sceneHeight = 960;
+
+    const inputPosX = document.getElementById('id_pos_x');
+    const inputPosY = document.getElementById('id_pos_y');
+    const inputWidth = document.getElementById('id_width');
+    const inputHeight = document.getElementById('id_height');
+    const inputOrientation = document.getElementById('id_orientation');
+
+    const stage = new Konva.Stage({
+            container: 'map-container',
+            width: sceneWidth,
+            height: sceneHeight,
+            draggable: true,
+            scaleX: 0.5,
+            scaleY: 0.5,
+        });
+
+        const floorLayer = new Konva.Layer();
+        const deskLayer = new Konva.Layer();
+
+        Konva.Image.fromURL('/media/{{original.room.floor.image}}', function (imageNode) {
+            imageNode.setAttrs({
+                x: 0,
+                y: 0,
+            });
+
+            const imageWidth = imageNode.attrs.image.width;
+            const imageHeight = imageNode.attrs.image.height;
+            stage.offsetX(-(sceneWidth / 2 - imageWidth / 2));
+            stage.offsetY(-(sceneHeight / 2 - imageHeight / 2));
+
+            floorLayer.add(imageNode);
+        });
+
+            const deskRect = new Konva.Rect({
+                x: {{ original.pos_x | safe }},
+                y: {{ original.pos_y | safe }},
+                width: {{ original.width | safe }},
+                height: {{ original.height | safe }},
+                fill: '#00000055',
+                rotation: {{ original.orientation | safe }},
+                draggable: true,
+            });
+
+            deskRect.on('mouseover', function () {
+                stage.container().style.cursor = 'grab';
+            });
+            deskRect.on('mouseout', function () {
+                stage.container().style.cursor = 'default';
+            });
+            deskRect.on('dragstart', function () {
+                stage.container().style.cursor = 'grabbing';
+            });
+            deskRect.on('dragend', function () {
+                stage.container().style.cursor = 'grab';
+                inputPosX.value = deskRect.x();
+                inputPosY.value = deskRect.y();
+            });
+            deskRect.on('transformend', function () {
+                inputWidth.value = {{ original.width | safe }} * deskRect.scaleX();
+                inputHeight.value = {{ original.height | safe }} * deskRect.scaleY();
+                inputOrientation.value = deskRect.rotation();
+            });
+
+            deskLayer.add(deskRect);
+
+        var tr = new Konva.Transformer();
+        deskLayer.add(tr);
+
+        tr.nodes([deskRect]);
+
+        stage.add(floorLayer);
+        stage.add(deskLayer);
+
+        floorLayer.draw();
+        deskLayer.draw();
+
+        var scaleBy = 1.05;
+        stage.on('wheel', (e) => {
+            // stop default scrolling
+            e.evt.preventDefault();
+
+            var oldScale = stage.scaleX();
+            var pointer = stage.getPointerPosition();
+
+            var mousePointTo = {
+                x: (pointer.x - stage.x()) / oldScale,
+                y: (pointer.y - stage.y()) / oldScale,
+            };
+
+            let direction = e.evt.deltaY > 0 ? -1 : 1;
+
+            if (e.evt.ctrlKey) {
+                direction = -direction;
+            }
+
+            var newScale = direction > 0 ? oldScale * scaleBy : oldScale / scaleBy;
+
+            stage.scale({ x: newScale, y: newScale });
+
+            var newPos = {
+                x: pointer.x - mousePointTo.x * newScale,
+                y: pointer.y - mousePointTo.y * newScale,
+            };
+            stage.position(newPos);
+        });
+
+        function fitStageIntoParentContainer() {
+            var container = document.querySelector('#map-container');
+
+            var containerWidth = container.offsetWidth;
+
+            var scale = containerWidth / sceneWidth;
+
+            stage.width(sceneWidth * scale);
+            stage.height(sceneHeight * scale);
+            stage.scale({ x: scale, y: scale });
+        }
+
+        fitStageIntoParentContainer();
+
+        window.addEventListener('resize', fitStageIntoParentContainer);
+</script>
+
+{% endblock %}

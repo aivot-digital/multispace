@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% include 'navbar.html' %}
+
+<div class="uk-container uk-margin-top">
+    <table class="uk-table">
+        <thead>
+        <tr>
+            <th>Datum</th>
+            <th>Raum</th>
+            <th>Arbeitsplatz</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for booking in bookings %}
+        <tr>
+            <td>{{ booking.date | date:'d.m.Y l' }}</td>
+            <td>@ {{ booking.desk.room.floor.name }}.{{ booking.desk.room.name }}</td>
+            <td>
+                <a href="{% url 'desk' id=booking.desk.id %}?date={{ booking.date | date:'Y-m-d' }}">
+                    {{ booking.desk.name }}
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

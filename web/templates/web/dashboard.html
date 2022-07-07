@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% include 'navbar.html' %}
+
+<div class="uk-container uk-margin-top">
+    <div
+            uk-grid
+    >
+        <div class="uk-width-expand">
+            <h5 class="uk-margin-small-bottom">Tag auswählen</h5>
+            <form
+                    method="get"
+                    action="/"
+            >
+                <a
+                        href="{% url 'dashboard' %}?date={{yesterday | date:'Y-m-d'}}"
+                        class="uk-button uk-button-default"
+                        uk-icon="icon: arrow-left"
+                        uk-tooltip="Vorheriger Tag"
+                ></a>
+                <a
+                        href="{% url 'dashboard' %}?date={{tomorrow | date:'Y-m-d'}}"
+                        class="uk-button uk-button-default"
+                        uk-icon="icon: arrow-right"
+                        uk-tooltip="Nächster Tag"
+                ></a>
+                <input
+                        type="date"
+                        class="uk-input uk-form-width-medium"
+                        value="{{ date | date:'Y-m-d'}}"
+                        name="date"
+                />
+                <button
+                        type="submit"
+                        class="uk-button uk-button-default"
+                        uk-tooltip="Ausgewählten Tag anzeigen"
+                >
+                    Anzeigen
+                </button>
+            </form>
+        </div>
+
+        <div class="uk-text-right">
+            {% if prefs.view == 'LS' %}
+            <a
+                    class="uk-button uk-button-default"
+                    href="{% url 'set_prefs_view' view='MP' %}?next={{request.get_full_path}}"
+                    uk-tooltip="Anzeige umschalten"
+            >Raumplan anzeigen</a>
+            {% endif %}
+            {% if prefs.view == 'MP' %}
+            <a
+                    class="uk-button uk-button-default"
+                    href="{% url 'set_prefs_view' view='LS' %}?next={{request.get_full_path}}"
+                    uk-tooltip="Anzeige umschalten"
+            >Liste anzeigen</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <ul class="uk-nav uk-margin-medium-top">
+        {% for floor in floors.all %}
+        <li class="uk-parent">
+            <div class="uk-flex uk-flex-between uk-flex-bottom">
+                <h2 class="uk-margin-remove">{{ floor.name }}</h2>
+                <h3 class="uk-margin-remove uk-text-primary"><small>Aktuelles Datum:</small> {{date | date:'d.m.Y'}}</h3>
+            </div>
+
+            {% if prefs.view == 'LS' %}
+            <ul class="uk-nav-sub toggle uk-margin-top">
+                {% for room in floor.rooms.all %}
+                <li class="uk-parent">
+                    <h3 class="uk-margin-remove">{{ room.name }}</h3>
+                    <ul class="uk-nav-sub">
+                        {% for desk in room.desks.all %}
+                        <li class="uk-flex uk-margin-small-bottom">
+                            <div class="uk-margin-small-right">
+                                <a href="{% url 'desk' id=desk.id %}?date={{ date | date:'Y-m-d' }}">
+                                    {{ desk.name }}
+                                </a>
+                            </div>
+                            <div>
+                                {% include 'booking_state.html' with desk=desk bookings=desk.bookings %}
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+
+            {% if prefs.view == 'MP' %}
+            <div class="uk-margin-top">
+                {% include 'map.html' %}
+            </div>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% if prefs.view == 'MP' %}
+{% include 'map_script.html' %}
+{% endif %}
+{% endblock %}

@@ -1,0 +1,25 @@
+version: '3.1'
+
+services:
+  db:
+    image: postgres:14.2
+    restart: always
+    environment:
+      POSTGRES_DB: multispace
+      POSTGRES_USER: multispace
+      POSTGRES_PASSWORD: multispaceftw1
+  multispace:
+    build:
+      context: .
+    restart: always
+    depends_on:
+      - db
+    environment:
+      MULTISPACE_PG_HOST: db
+      MULTISPACE_PG_PORT: 5432
+      MULTISPACE_PG_USER: multispace
+      MULTISPACE_PG_PASSWORD: multispaceftw1
+      MULTISPACE_PG_DATABASE: multispace
+      MULTISPACE_HOST: 'http://localhost:8000'
+    ports:
+      - '8000:80'

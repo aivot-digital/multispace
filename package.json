@@ -1,0 +1,26 @@
+{
+  "name": "multispace",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "release": "standard-version",
+    "release:minor": "standard-version --release-as minor",
+    "release:patch": "standard-version --release-as patch",
+    "release:major": "standard-version --release-as major",
+    "build:static": "sass ./styles.scss > ./web/static/css/styles.css && webpack",
+    "build": "npm run build:static && docker build --build-arg VERSION=$npm_package_version --tag ghcr.io/aivot-digital/$npm_package_name:$npm_package_version --platform=linux/amd64 . && docker push ghcr.io/aivot-digital/$npm_package_name:$npm_package_version"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "konva": "^8.3.10",
+    "sass": "^1.49.11",
+    "standard-version": "^9.3.2",
+    "uikit": "^3.13.7",
+    "webpack": "^5.71.0"
+  },
+  "devDependencies": {
+    "webpack-cli": "^4.9.2"
+  }
+}
