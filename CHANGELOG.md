@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.2](https://github.com/aivot-digital/multispace/compare/v1.0.1...v1.0.2) (2022-07-08)
+
+
+### Bug Fixes
+
+* Upgrade package django to version 4.0.6 ([17957c1](https://github.com/aivot-digital/multispace/commits/17957c1f94dd67b356a014ca9c4f217ebe17391a))
+* Upgrade package pillow to version 9.2.0 ([cb22156](https://github.com/aivot-digital/multispace/commits/cb221563406d3a65554c81847a9fa2ff06e59231))
+
 ### [1.0.1](https://github.com/aivot-digital/multispace/compare/v1.0.0...v1.0.1) (2022-07-08)
 
 
