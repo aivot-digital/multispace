@@ -21,5 +21,6 @@ services:
       MULTISPACE_PG_PASSWORD: multispaceftw1
       MULTISPACE_PG_DATABASE: multispace
       MULTISPACE_HOST: 'http://localhost:8000'
+      MULTISPACE_SECRET: '!!!!insecure-example-key-change-me!!!!'
     ports:
       - '8000:80'

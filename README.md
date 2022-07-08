@@ -60,7 +60,8 @@ services:
       MULTISPACE_PG_USER: multispace
       MULTISPACE_PG_PASSWORD: multispaceftw1
       MULTISPACE_PG_DATABASE: multispace
-      MULTISPACE_HOST: http://localhost:8000
+      MULTISPACE_HOST: 'http://localhost:8000'
+      MULTISPACE_SECRET: '!!!!insecure-example-key-change-me!!!!'
     ports:
       - "8000:80"
 ```
@@ -127,7 +128,18 @@ python manage.py createsuperuser
 ```
 
 These commands will require you to create a new superuser account to manage your installation.
-After you've run the provision commands, you can start the MultiSpace server.
+After you've run the provision commands, you are required to configure the environment.
+Please set the following environment variables:
+
+* `MULTISPACE_PG_HOST` - The hostname of the postgres server e.g. `localhost`
+* `MULTISPACE_PG_PORT` - The port of the postgres server e.g. `5432`
+* `MULTISPACE_PG_USER` - The user to access the postgres server e.g. `multispace_database_user`
+* `MULTISPACE_PG_PASSWORD` - The password to access the postgres server e.g. `my-super-secret-password`
+* `MULTISPACE_PG_DATABASE` - The database of the postgres server to use for the MultiSpace insance e.g. `ms-database`
+* `MULTISPACE_HOST` - The hostname with protocol the MultiSpace server is access with e.g. `https://multispace.aivot.de`
+* `MULTISPACE_SECRET` - The secret for this MultiSpace instance. Please make sure to choose a random string with 64 characters or more. **This is really important and not settings this secret exposes your server to potential attackers**
+
+After you've set all required environment variables, you can start the MultiSpace server.
 Run the following command to start the MultiSpace:
 
 ```bash
