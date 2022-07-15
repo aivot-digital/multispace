@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0](https://github.com/aivot-digital/multispace/compare/v1.0.2...v1.1.0) (2022-07-15)
+
+
+### Features
+
+* Improve colors for desks states ([98bec8d](https://github.com/aivot-digital/multispace/commits/98bec8d8654110064e4764725d1f91590b5b87e1))
+
+
+### Bug Fixes
+
+* Fix bottom margin of maps to improve ux when accessing multiple floors ([caf6a12](https://github.com/aivot-digital/multispace/commits/caf6a126e66321545741905ab180f836bbafad87))
+* Fix missing dependency in desk editing ([e7b036b](https://github.com/aivot-digital/multispace/commits/e7b036b99e730918e6962d69291d1dac4a7d64f1))
+
 ### [1.0.2](https://github.com/aivot-digital/multispace/compare/v1.0.1...v1.0.2) (2022-07-08)
 
 
