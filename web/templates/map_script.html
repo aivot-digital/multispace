@@ -69,16 +69,16 @@
                 y: desk.y,
                 width: desk.width,
                 height: desk.height,
-                fill: desk.blocked ? '#D18D2355' : (desk.booked ? '#00308755' : '#44945655'),
+                fill: desk.blocked ? 'rgba(249, 215, 117, 0.5)' : (desk.booked ? 'rgba(73, 100, 192, 0.5)' : 'rgba(65, 185, 149, 0.5)'),
                 rotation: desk.orientation,
             });
 
             deskRect.on('mouseover', function () {
-                deskRect.fill(desk.blocked ? '#D18D23cc' : (desk.booked ? '#003087cc' : '#449456cc'));
+                deskRect.fill(desk.blocked ? 'rgba(249, 215, 117, 1.0)' : (desk.booked ? 'rgba(73, 100, 192, 1.0)' : 'rgba(65, 185, 149, 1.0)'));
                 stage.container().style.cursor = 'pointer';
             });
             deskRect.on('mouseout', function () {
-                deskRect.fill(desk.blocked ? '#D18D2355' : (desk.booked ? '#00308755' : '#44945655'));
+                deskRect.fill(desk.blocked ? 'rgba(249, 215, 117, 0.5)' : (desk.booked ? 'rgba(73, 100, 192, 0.5)' : 'rgba(65, 185, 149, 0.5)'));
                 stage.container().style.cursor = 'default';
             });
             deskRect.on('click tap', function () {
