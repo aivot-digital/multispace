@@ -4,6 +4,7 @@
 {% include 'navbar.html' %}
 
 <div class="uk-container uk-margin-top">
+    {% if bookings.exists %}
     <table class="uk-table">
         <thead>
         <tr>
@@ -26,6 +27,9 @@
         {% endfor %}
         </tbody>
     </table>
+    {% else %}
+        <h4>Keine anstehenden Buchungen vorhanden</h4>
+    {% endif %}
 </div>
 
 {% endblock %}

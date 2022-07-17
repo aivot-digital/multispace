@@ -44,6 +44,9 @@
                 <a href="{% url 'manage-floors' %}?download={{floor.id}}">
                     Herunterladen
                 </a>
+                <a href="{% url 'manage-desks' floor_id=floor.id %}">
+                    Arbeitsplätze Verwalten
+                </a>
             </td>
         </tr>
         {% endfor %}

@@ -7,6 +7,7 @@ from .views.initi_view import init_view
 from .views.desk_view import DeskView
 from .views.login_view import LoginView
 from .views.logout_view import logout_view
+from .views.manage_desks_view import ManageDesksView
 from .views.manage_floors_view import ManageFloorsView
 from .views.password_view import PasswordView
 from .views.set_prefs_view import set_prefs_view
@@ -24,4 +25,5 @@ urlpatterns = [
     path('prefs/view/<str:view>', set_prefs_view, name='set_prefs_view'),
     path('changelog', ChangelogView.as_view(), name='changelog'),
     path('manage-floors', ManageFloorsView.as_view(), name='manage-floors'),
+    path('manage-floors/<int:floor_id>', ManageDesksView.as_view(), name='manage-desks'),
 ]
