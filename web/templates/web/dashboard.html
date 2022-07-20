@@ -64,7 +64,8 @@
         <li class="uk-parent">
             <div class="uk-flex uk-flex-between uk-flex-bottom">
                 <h2 class="uk-margin-remove">{{ floor.name }}</h2>
-                <h3 class="uk-margin-remove uk-text-primary"><small>Aktuelles Datum:</small> {{date | date:'d.m.Y'}}</h3>
+                <h3 class="uk-margin-remove uk-text-primary"><small>Aktuelles Datum:</small> {{date | date:'d.m.Y'}}
+                </h3>
             </div>
 
             {% if prefs.view == 'LS' %}
@@ -93,7 +94,10 @@
 
             {% if prefs.view == 'MP' %}
             <div class="uk-margin-top uk-margin-large-bottom">
-                {% include 'map.html' %}
+                <div
+                        id="map-container-{{floor.id}}"
+                        class="map-container"
+                ></div>
             </div>
             {% endif %}
         </li>
@@ -101,6 +105,34 @@
     </ul>
 </div>
 {% if prefs.view == 'MP' %}
-{% include 'map_script.html' %}
+<script>
+{% for floor in floors.all %}
+    (function() {
+    const floor = {
+        id: {{floor.id | safe}},
+        image: '/media/{{ floor.image }}',
+        desks: [
+            {% for room in floor.rooms.all %}
+            {% for desk in room.desks.all %}
+            {
+                id: {{desk.id | safe}},
+                name: '{{desk.name}}',
+                width: {{desk.width | safe}},
+                height: {{desk.height | safe}},
+                pos_x: {{desk.pos_x | safe}},
+                pos_y: {{desk.pos_y | safe}},
+                orientation: {{desk.orientation | safe}},
+                url: '{% url 'desk' id=desk.id %}?date={{ date | date:'Y-m-d' }}',
+                blocked: {{ desk.is_blocked | yesno:'true,false' }},
+                booked: {% if desk.bookings.exists %}'{{ desk.bookings.first.user.username }}'{% else %}null{% endif %},
+            },
+            {% endfor %}
+            {% endfor %}
+        ]
+    };
+    MSP.initMap('map-container-{{floor.id}}', floor, false);
+    })();
+{% endfor %}
+</script>
 {% endif %}
 {% endblock %}

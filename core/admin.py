@@ -20,7 +20,6 @@ class BookingAdmin(admin.ModelAdmin):
 class DeskAdmin(admin.ModelAdmin):
     list_filter = ['room']
     list_display = ['name', 'room', 'get_floor']
-    change_form_template = 'admin/change_desk.html'
 
     def get_floor(self, obj):
         return obj.room.floor

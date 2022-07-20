@@ -4,7 +4,7 @@ package.json
 package_lock.json
 styles.scss
 webpack.config.js
-bundle.js
+bundle.ts
 .idea/
 static/
 media/
