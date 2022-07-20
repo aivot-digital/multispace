@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/aivot-digital/multispace/compare/v1.1.0...v1.2.0) (2022-07-20)
+
+
+### Features
+
+* Add page for room and desk management ([#2](https://github.com/aivot-digital/multispace/issues/2)) ([26393bd](https://github.com/aivot-digital/multispace/commits/26393bdea51e208a9d7eaac3218d6114b5dbb87c))
+
 ## [1.1.0](https://github.com/aivot-digital/multispace/compare/v1.0.2...v1.1.0) (2022-07-15)
 
 
