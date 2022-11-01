@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.3.0](https://github.com/aivot-digital/multispace/compare/v1.2.0...v1.3.0) (2022-11-01)
+
+
+### Features
+
+* Upgrade django version ([3c535d1](https://github.com/aivot-digital/multispace/commits/3c535d1a752935d965c51a67a5c649bda2f15646))
+
 ## [1.2.0](https://github.com/aivot-digital/multispace/compare/v1.1.0...v1.2.0) (2022-07-20)
 
 
