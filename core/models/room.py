@@ -1,15 +1,8 @@
 from django.db import models
 
-from .floor import Floor
-
 
 class Room(models.Model):
-    floor = models.ForeignKey(Floor, related_name='rooms', on_delete=models.CASCADE)
+    floor = models.ForeignKey('Floor', on_delete=models.CASCADE, related_name='rooms')
     name = models.CharField(max_length=32)
-
-    class Meta:
-        verbose_name = 'Raum'
-        verbose_name_plural = 'Räume'
-
-    def __str__(self):
-        return self.name
+    description = models.TextField(blank=True, default='')
+    tags = models.JSONField(default=list)

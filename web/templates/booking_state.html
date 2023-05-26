@@ -1,9 +1,0 @@
-{% if desk.is_blocked %}
-<span class="uk-label uk-label-warning">Nicht verfügbar</span>
-{% else %}
-{% if bookings.exists %}
-<span class="uk-label">{{ bookings.first.user.username }}</span>
-{% else %}
-<span class="uk-label uk-label-success">Frei</span>
-{% endif %}
-{% endif %}

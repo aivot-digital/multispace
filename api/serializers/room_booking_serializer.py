@@ -1,0 +1,9 @@
+from rest_framework import serializers
+
+from core.models import RoomBooking
+
+
+class RoomBookingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RoomBooking
+        fields = '__all__'

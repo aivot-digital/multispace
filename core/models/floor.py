@@ -5,9 +5,6 @@ class Floor(models.Model):
     name = models.CharField(max_length=32)
     image = models.ImageField()
 
-    class Meta:
-        verbose_name = 'Bereich'
-        verbose_name_plural = 'Bereiche'
-
-    def __str__(self):
-        return self.name
+    def delete(self, using=None, keep_parents=False):
+        self.image.delete(save=False)
+        super().delete(using=using, keep_parents=keep_parents)
