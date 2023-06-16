@@ -8,3 +8,6 @@ class RoomBooking(models.Model):
     start = models.DateTimeField()
     end = models.DateTimeField()
     created = models.DateField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.user.username} -> {self.room.name} ({self.start} - {self.end})'

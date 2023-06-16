@@ -1,0 +1,1976 @@
+openapi: 3.0.2
+info:
+  title: ''
+  version: ''
+paths:
+  /api/display/{display_key}/:
+    get:
+      operationId: retrieveDisplay
+      description: ''
+      parameters:
+      - name: display_key
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: ''
+      tags:
+      - api
+  /api/accesses/:
+    get:
+      operationId: listAccess
+      description: ''
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - name: floor
+        required: false
+        in: query
+        description: floor
+        schema:
+          type: string
+      - name: user
+        required: false
+        in: query
+        description: user
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    example: 123
+                  next:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=400&limit=100
+                  previous:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=200&limit=100
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Access'
+          description: ''
+      tags:
+      - api
+    post:
+      operationId: createAccess
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Access'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Access'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Access'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Access'
+          description: ''
+      tags:
+      - api
+  /api/accesses/{id}/:
+    get:
+      operationId: retrieveAccess
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this access.
+        schema:
+          type: string
+      - name: floor
+        required: false
+        in: query
+        description: floor
+        schema:
+          type: string
+      - name: user
+        required: false
+        in: query
+        description: user
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Access'
+          description: ''
+      tags:
+      - api
+    put:
+      operationId: updateAccess
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this access.
+        schema:
+          type: string
+      - name: floor
+        required: false
+        in: query
+        description: floor
+        schema:
+          type: string
+      - name: user
+        required: false
+        in: query
+        description: user
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Access'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Access'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Access'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Access'
+          description: ''
+      tags:
+      - api
+    patch:
+      operationId: partialUpdateAccess
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this access.
+        schema:
+          type: string
+      - name: floor
+        required: false
+        in: query
+        description: floor
+        schema:
+          type: string
+      - name: user
+        required: false
+        in: query
+        description: user
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Access'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Access'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Access'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Access'
+          description: ''
+      tags:
+      - api
+    delete:
+      operationId: destroyAccess
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this access.
+        schema:
+          type: string
+      - name: floor
+        required: false
+        in: query
+        description: floor
+        schema:
+          type: string
+      - name: user
+        required: false
+        in: query
+        description: user
+        schema:
+          type: string
+      responses:
+        '204':
+          description: ''
+      tags:
+      - api
+  /api/desk-bookings/:
+    get:
+      operationId: listDeskBookings
+      description: ''
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    example: 123
+                  next:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=400&limit=100
+                  previous:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=200&limit=100
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/DeskBooking'
+          description: ''
+      tags:
+      - api
+    post:
+      operationId: createDeskBooking
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeskBooking'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/DeskBooking'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/DeskBooking'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeskBooking'
+          description: ''
+      tags:
+      - api
+  /api/desk-bookings/{id}/:
+    get:
+      operationId: retrieveDeskBooking
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeskBooking'
+          description: ''
+      tags:
+      - api
+    put:
+      operationId: updateDeskBooking
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeskBooking'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/DeskBooking'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/DeskBooking'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeskBooking'
+          description: ''
+      tags:
+      - api
+    patch:
+      operationId: partialUpdateDeskBooking
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeskBooking'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/DeskBooking'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/DeskBooking'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeskBooking'
+          description: ''
+      tags:
+      - api
+    delete:
+      operationId: destroyDeskBooking
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      responses:
+        '204':
+          description: ''
+      tags:
+      - api
+  /api/desks/:
+    get:
+      operationId: listDesks
+      description: ''
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    example: 123
+                  next:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=400&limit=100
+                  previous:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=200&limit=100
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Desk'
+          description: ''
+      tags:
+      - api
+    post:
+      operationId: createDesk
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Desk'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Desk'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Desk'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Desk'
+          description: ''
+      tags:
+      - api
+  /api/desks/{id}/:
+    get:
+      operationId: retrieveDesk
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Desk'
+          description: ''
+      tags:
+      - api
+    put:
+      operationId: updateDesk
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Desk'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Desk'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Desk'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Desk'
+          description: ''
+      tags:
+      - api
+    patch:
+      operationId: partialUpdateDesk
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Desk'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Desk'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Desk'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Desk'
+          description: ''
+      tags:
+      - api
+    delete:
+      operationId: destroyDesk
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      responses:
+        '204':
+          description: ''
+      tags:
+      - api
+  /api/display-keys/:
+    get:
+      operationId: listDisplayKeys
+      description: ''
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - name: floor
+        required: false
+        in: query
+        description: floor
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    example: 123
+                  next:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=400&limit=100
+                  previous:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=200&limit=100
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/DisplayKey'
+          description: ''
+      tags:
+      - api
+    post:
+      operationId: createDisplayKey
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DisplayKey'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/DisplayKey'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/DisplayKey'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DisplayKey'
+          description: ''
+      tags:
+      - api
+  /api/display-keys/{id}/:
+    get:
+      operationId: retrieveDisplayKey
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A UUID string identifying this display key.
+        schema:
+          type: string
+      - name: floor
+        required: false
+        in: query
+        description: floor
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DisplayKey'
+          description: ''
+      tags:
+      - api
+    put:
+      operationId: updateDisplayKey
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A UUID string identifying this display key.
+        schema:
+          type: string
+      - name: floor
+        required: false
+        in: query
+        description: floor
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DisplayKey'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/DisplayKey'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/DisplayKey'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DisplayKey'
+          description: ''
+      tags:
+      - api
+    patch:
+      operationId: partialUpdateDisplayKey
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A UUID string identifying this display key.
+        schema:
+          type: string
+      - name: floor
+        required: false
+        in: query
+        description: floor
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DisplayKey'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/DisplayKey'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/DisplayKey'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DisplayKey'
+          description: ''
+      tags:
+      - api
+    delete:
+      operationId: destroyDisplayKey
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A UUID string identifying this display key.
+        schema:
+          type: string
+      - name: floor
+        required: false
+        in: query
+        description: floor
+        schema:
+          type: string
+      responses:
+        '204':
+          description: ''
+      tags:
+      - api
+  /api/floors/:
+    get:
+      operationId: listFloors
+      description: ''
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    example: 123
+                  next:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=400&limit=100
+                  previous:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=200&limit=100
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Floor'
+          description: ''
+      tags:
+      - api
+    post:
+      operationId: createFloor
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Floor'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Floor'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Floor'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Floor'
+          description: ''
+      tags:
+      - api
+  /api/floors/{id}/:
+    get:
+      operationId: retrieveFloor
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Floor'
+          description: ''
+      tags:
+      - api
+    put:
+      operationId: updateFloor
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Floor'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Floor'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Floor'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Floor'
+          description: ''
+      tags:
+      - api
+    patch:
+      operationId: partialUpdateFloor
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Floor'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Floor'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Floor'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Floor'
+          description: ''
+      tags:
+      - api
+    delete:
+      operationId: destroyFloor
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      responses:
+        '204':
+          description: ''
+      tags:
+      - api
+  /api/room-bookings/:
+    get:
+      operationId: listRoomBookings
+      description: ''
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    example: 123
+                  next:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=400&limit=100
+                  previous:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=200&limit=100
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/RoomBooking'
+          description: ''
+      tags:
+      - api
+    post:
+      operationId: createRoomBooking
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoomBooking'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RoomBooking'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RoomBooking'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoomBooking'
+          description: ''
+      tags:
+      - api
+  /api/room-bookings/{id}/:
+    get:
+      operationId: retrieveRoomBooking
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoomBooking'
+          description: ''
+      tags:
+      - api
+    put:
+      operationId: updateRoomBooking
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoomBooking'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RoomBooking'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RoomBooking'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoomBooking'
+          description: ''
+      tags:
+      - api
+    patch:
+      operationId: partialUpdateRoomBooking
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoomBooking'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RoomBooking'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RoomBooking'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoomBooking'
+          description: ''
+      tags:
+      - api
+    delete:
+      operationId: destroyRoomBooking
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      responses:
+        '204':
+          description: ''
+      tags:
+      - api
+  /api/rooms/:
+    get:
+      operationId: listRooms
+      description: ''
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    example: 123
+                  next:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=400&limit=100
+                  previous:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=200&limit=100
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Room'
+          description: ''
+      tags:
+      - api
+    post:
+      operationId: createRoom
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Room'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Room'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Room'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Room'
+          description: ''
+      tags:
+      - api
+  /api/rooms/{id}/:
+    get:
+      operationId: retrieveRoom
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Room'
+          description: ''
+      tags:
+      - api
+    put:
+      operationId: updateRoom
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Room'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Room'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Room'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Room'
+          description: ''
+      tags:
+      - api
+    patch:
+      operationId: partialUpdateRoom
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Room'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Room'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Room'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Room'
+          description: ''
+      tags:
+      - api
+    delete:
+      operationId: destroyRoom
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      responses:
+        '204':
+          description: ''
+      tags:
+      - api
+  /api/system-configs/:
+    get:
+      operationId: listSystemConfigs
+      description: ''
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    example: 123
+                  next:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=400&limit=100
+                  previous:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=200&limit=100
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SystemConfig'
+          description: ''
+      tags:
+      - api
+    post:
+      operationId: createSystemConfig
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SystemConfig'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SystemConfig'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SystemConfig'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemConfig'
+          description: ''
+      tags:
+      - api
+  /api/system-configs/{key}/:
+    get:
+      operationId: retrieveSystemConfig
+      description: ''
+      parameters:
+      - name: key
+        in: path
+        required: true
+        description: A unique value identifying this system config.
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemConfig'
+          description: ''
+      tags:
+      - api
+    put:
+      operationId: updateSystemConfig
+      description: ''
+      parameters:
+      - name: key
+        in: path
+        required: true
+        description: A unique value identifying this system config.
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SystemConfig'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SystemConfig'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SystemConfig'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemConfig'
+          description: ''
+      tags:
+      - api
+    patch:
+      operationId: partialUpdateSystemConfig
+      description: ''
+      parameters:
+      - name: key
+        in: path
+        required: true
+        description: A unique value identifying this system config.
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SystemConfig'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SystemConfig'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SystemConfig'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemConfig'
+          description: ''
+      tags:
+      - api
+    delete:
+      operationId: destroySystemConfig
+      description: ''
+      parameters:
+      - name: key
+        in: path
+        required: true
+        description: A unique value identifying this system config.
+        schema:
+          type: string
+      responses:
+        '204':
+          description: ''
+      tags:
+      - api
+  /api/user-configs/:
+    get:
+      operationId: listUserConfigs
+      description: ''
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    example: 123
+                  next:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=400&limit=100
+                  previous:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=200&limit=100
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/UserConfig'
+          description: ''
+      tags:
+      - api
+    post:
+      operationId: createUserConfig
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserConfig'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserConfig'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserConfig'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserConfig'
+          description: ''
+      tags:
+      - api
+  /api/user-configs/{id}/:
+    get:
+      operationId: retrieveUserConfig
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserConfig'
+          description: ''
+      tags:
+      - api
+    put:
+      operationId: updateUserConfig
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserConfig'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserConfig'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserConfig'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserConfig'
+          description: ''
+      tags:
+      - api
+    patch:
+      operationId: partialUpdateUserConfig
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserConfig'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserConfig'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserConfig'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserConfig'
+          description: ''
+      tags:
+      - api
+    delete:
+      operationId: destroyUserConfig
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      responses:
+        '204':
+          description: ''
+      tags:
+      - api
+  /api/users/:
+    get:
+      operationId: listUsers
+      description: ''
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    example: 123
+                  next:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=400&limit=100
+                  previous:
+                    type: string
+                    nullable: true
+                    format: uri
+                    example: http://api.example.org/accounts/?offset=200&limit=100
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+          description: ''
+      tags:
+      - api
+    post:
+      operationId: createUser
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/User'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+      tags:
+      - api
+  /api/users/{id}/:
+    get:
+      operationId: retrieveUser
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this Benutzer.
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+      tags:
+      - api
+    put:
+      operationId: updateUser
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this Benutzer.
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/User'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+      tags:
+      - api
+    patch:
+      operationId: partialUpdateUser
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this Benutzer.
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/User'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+      tags:
+      - api
+    delete:
+      operationId: destroyUser
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this Benutzer.
+        schema:
+          type: string
+      responses:
+        '204':
+          description: ''
+      tags:
+      - api
+  /api/auth/:
+    post:
+      operationId: createAuthToken
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AuthToken'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AuthToken'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthToken'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthToken'
+          description: ''
+      tags:
+      - api
+components:
+  schemas:
+    Access:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user:
+          type: integer
+        floor:
+          type: integer
+      required:
+      - user
+      - floor
+    DeskBooking:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        date:
+          type: string
+          format: date
+        created:
+          type: string
+          format: date
+          readOnly: true
+        user:
+          type: integer
+        desk:
+          type: integer
+      required:
+      - date
+      - user
+      - desk
+    Desk:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 32
+        description:
+          type: string
+        tags:
+          type: object
+        width:
+          type: number
+        height:
+          type: number
+        pos_x:
+          type: number
+        pos_y:
+          type: number
+        orientation:
+          type: number
+        floor:
+          type: integer
+      required:
+      - name
+      - width
+      - height
+      - pos_x
+      - pos_y
+      - orientation
+      - floor
+    DisplayKey:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        floor:
+          type: integer
+      required:
+      - floor
+    Floor:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 32
+        image:
+          type: string
+          format: binary
+      required:
+      - name
+      - image
+    RoomBooking:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        start:
+          type: string
+          format: date-time
+        end:
+          type: string
+          format: date-time
+        created:
+          type: string
+          format: date
+          readOnly: true
+        user:
+          type: integer
+        room:
+          type: integer
+      required:
+      - start
+      - end
+      - user
+      - room
+    Room:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 32
+        description:
+          type: string
+        tags:
+          type: object
+        floor:
+          type: integer
+      required:
+      - name
+      - floor
+    SystemConfig:
+      type: object
+      properties:
+        key:
+          type: string
+          maxLength: 8
+        value:
+          type: string
+          maxLength: 64
+      required:
+      - key
+      - value
+    UserConfig:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        key:
+          type: string
+          maxLength: 8
+        value:
+          type: string
+          maxLength: 64
+        user:
+          type: integer
+      required:
+      - key
+      - value
+      - user
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          description: Erforderlich. 150 Zeichen oder weniger. Nur Buchstaben, Ziffern
+            und @/./+/-/_.
+          pattern: ^[\w.@+-]+\z
+          maxLength: 150
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        is_staff:
+          type: boolean
+          description: Legt fest, ob sich der Benutzer an der Administrationsseite
+            anmelden kann.
+      required:
+      - username
+    AuthToken:
+      type: object
+      properties:
+        username:
+          type: string
+          writeOnly: true
+        password:
+          type: string
+          writeOnly: true
+        token:
+          type: string
+          readOnly: true
+      required:
+      - username
+      - password

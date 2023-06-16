@@ -2,7 +2,8 @@ import React from "react";
 import {
     AppBar,
     Box,
-    Button, Divider,
+    Button,
+    Divider,
     IconButton,
     ListItemIcon,
     ListItemText,
@@ -21,7 +22,6 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import GroupIcon from "@mui/icons-material/Group";
 import BusinessIcon from "@mui/icons-material/Business";
-import TvIcon from "@mui/icons-material/Tv";
 import {SystemConfigKeys} from "../data/system-config-keys";
 
 export function Navbar() {
@@ -51,7 +51,7 @@ export function Navbar() {
                         sx={{
                             flexGrow: 1,
                             textDecoration: 'none',
-                    }}
+                        }}
                         color="inherit"
                     >
                         {brand}
@@ -115,10 +115,9 @@ export function Navbar() {
                     user &&
                     user.is_staff &&
                     <MenuItem
-                        onClick={() => {
-                            handleMenuClose();
-                            navigate('/manage-users');
-                        }}
+                        component="a"
+                        href="/admin/auth/user/"
+                        target="_blank"
                     >
                         <ListItemIcon>
                             <GroupIcon fontSize="small"/>
@@ -143,24 +142,6 @@ export function Navbar() {
                         </ListItemIcon>
                         <ListItemText>
                             Bereichsverwaltung
-                        </ListItemText>
-                    </MenuItem>
-                }
-
-                {
-                    user &&
-                    user.is_staff &&
-                    <MenuItem
-                        onClick={() => {
-                            handleMenuClose();
-                            navigate('/manage-displays');
-                        }}
-                    >
-                        <ListItemIcon>
-                            <TvIcon fontSize="small"/>
-                        </ListItemIcon>
-                        <ListItemText>
-                            Anzeigeverwaltung
                         </ListItemText>
                     </MenuItem>
                 }

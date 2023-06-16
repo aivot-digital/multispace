@@ -8,7 +8,10 @@ from core.models import RoomBooking
 class RoomBookingViewSet(viewsets.ModelViewSet):
     serializer_class = RoomBookingSerializer
     filterset_fields = [
-        'desk',
+        'room',
+        'user',
+        'start',
+        'end',
     ]
 
     def get_queryset(self):
@@ -16,10 +19,14 @@ class RoomBookingViewSet(viewsets.ModelViewSet):
         if user.is_staff:
             return RoomBooking.objects.all()
         else:
-            return RoomBooking.objects.filter(user=user)
+            return RoomBooking.objects.filter(room__floor__accesses__user=user)
 
     def get_permissions(self):
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
-            return permissions.IsAdminUser()
+            return [
+                permissions.IsAdminUser(),
+            ]
         else:
-            return permissions.IsAuthenticated()
+            return [
+                permissions.IsAuthenticated(),
+            ]

@@ -19,7 +19,7 @@ export class ApiService {
             headers: this.createHeaders(),
             body: JSON.stringify(data),
         });
-        if (res.status !== 201) {
+        if (res.status !== 200 && res.status !== 201) {
             throw new ApiError(res.status, await res.json());
         }
         return await res.json();
@@ -33,7 +33,7 @@ export class ApiService {
             },
             body: data,
         });
-        if (res.status !== 201) {
+        if (res.status !== 200 && res.status !== 201) {
             throw new ApiError(res.status, await res.json());
         }
         return await res.json();
@@ -44,6 +44,20 @@ export class ApiService {
             method: 'PATCH',
             headers: this.createHeaders(),
             body: JSON.stringify(data),
+        });
+        if (res.status !== 200) {
+            throw new ApiError(res.status, await res.json());
+        }
+        return await res.json();
+    }
+
+    public static async patchFormData<R>(path: string, data: FormData): Promise<R> {
+        const res = await fetch(this.host + path, {
+            method: 'PATCH',
+            headers: {
+                'Authorization': this.createHeaders().Authorization,
+            },
+            body: data,
         });
         if (res.status !== 200) {
             throw new ApiError(res.status, await res.json());

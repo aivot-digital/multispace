@@ -8,3 +8,6 @@ class Floor(models.Model):
     def delete(self, using=None, keep_parents=False):
         self.image.delete(save=False)
         super().delete(using=using, keep_parents=keep_parents)
+
+    def __str__(self):
+        return self.name

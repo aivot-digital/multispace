@@ -13,7 +13,7 @@ const initialState: SystemConfigState = {
 };
 
 export const fetchSystemConfig = createAsyncThunk('system-config/fetchSystemConfig', async () => {
-    const response = await SystemConfigApiService.list(0, 999);
+    const response = await SystemConfigApiService.list();
     return response.results.reduce((acc, conf) => ({
         ...acc,
         [conf.key]: conf.value,

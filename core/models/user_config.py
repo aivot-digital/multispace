@@ -12,3 +12,7 @@ class UserConfig(models.Model):
             'user',
             'key',
         )
+
+
+    def __str__(self):
+        return f'{self.user.username}: {self.key} = {self.value}'

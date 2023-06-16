@@ -1,9 +1,11 @@
-import {Box, Button, TextField, Typography} from "@mui/material";
+import {Box, Button, Paper, TextField, Typography} from "@mui/material";
 import * as yup from 'yup';
 import {useAppDispatch, useAppSelector} from "../hooks";
 import {useFormik} from "formik";
 import {selectSystemConfig, setSystemConfig} from "../features/system-config";
 import {SystemConfigKeys} from "../data/system-config-keys";
+import {SaveOutlined, RestartAltOutlined} from '@mui/icons-material';
+
 
 const validationSchema = yup.object({
     brand: yup
@@ -34,7 +36,12 @@ export function SystemSettingsPage() {
                 Systemeinstellungen
             </Typography>
 
-            <Box sx={{mt: 4}}>
+            <Paper
+                sx={{
+                    mt: 4,
+                    p: 4,
+                }}
+            >
                 <form onSubmit={formik.handleSubmit}>
                     <TextField
                         fullWidth
@@ -55,6 +62,7 @@ export function SystemSettingsPage() {
                             variant="outlined"
                             type="submit"
                             sx={{mr: 2}}
+                            startIcon={<SaveOutlined/>}
                         >
                             Speichern
                         </Button>
@@ -63,12 +71,14 @@ export function SystemSettingsPage() {
                             color="error"
                             variant="outlined"
                             type="reset"
+                            onClick={() => formik.resetForm()}
+                            startIcon={<RestartAltOutlined/>}
                         >
                             Zurücksetzen
                         </Button>
                     </Box>
                 </form>
-            </Box>
+            </Paper>
         </Box>
     );
 }

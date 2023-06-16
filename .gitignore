@@ -4,3 +4,4 @@ static/
 venv/
 node_modules/
 .idea/
+*.iml

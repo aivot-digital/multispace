@@ -13,3 +13,6 @@ class Desk(models.Model):
     pos_x = models.FloatField()
     pos_y = models.FloatField()
     orientation = models.FloatField()
+
+    def __str__(self):
+        return f'{self.name} ({self.floor.name})'

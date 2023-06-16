@@ -16,7 +16,7 @@ class UserViewSet(viewsets.ModelViewSet):
         elif self.action in ['update', 'partial_update']:
             return [
                 permissions.IsAdminUser(),
-            ]  # TODO: Allow self update and admin update
+            ]
         else:
             return [
                 permissions.IsAuthenticated(),

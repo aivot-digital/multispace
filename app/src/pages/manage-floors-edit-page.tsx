@@ -1,25 +1,25 @@
 import React, {useEffect, useRef, useState} from "react";
-import {Box, Button, TextField, Typography} from "@mui/material";
+import {Box, Button, Tab, Tabs, TextField, Typography} from "@mui/material";
 import {Floor} from "../models/floor";
 import {FloorApiService} from "../services/rest-api-service";
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import * as yup from 'yup';
 import {useFormik} from "formik";
 import {ApiService} from "../services/api-service";
+import {useAppDispatch} from "../hooks";
+import {addMessage, hideLoading, showLoading} from "../features/app";
+import {FloorPlan} from "../components/floor-plan";
+import {ManageFloorsEditPageTabCommon} from "./manage-floors-edit-page-tab-common";
+import {ManageFloorsEditPageTabDesks} from "./manage-floors-edit-page-tab-desks";
+import {ManageFloorsEditPageTabRooms} from "./manage-floors-edit-page-tab-rooms";
+import {ManageFloorsEditPageTabAccess} from "./manage-floors-edit-page-tab-access";
+import {ManageFloorsEditPageTabDisplays} from "./manage-floors-edit-page-tab-displays";
 
-const validationSchema = yup.object({
-    name: yup
-        .string()
-        .required('Der Name ist ein Pflichtfeld'),
-    image: yup
-        .string()
-        .required('Das Bild ist ein Pflichtfeld'),
-});
 
 export function ManageFloorsEditPage() {
     const {id} = useParams();
 
-    const fileRef = useRef<HTMLInputElement>(null);
+    const [currentTab, setCurrentTab] = useState<number>(0);
     const [floor, setFloor] = useState<Floor>();
 
     useEffect(() => {
@@ -28,28 +28,12 @@ export function ManageFloorsEditPage() {
                 .then(res => setFloor(res));
         } else {
             setFloor({
-                id: -1,
+                id: 0,
                 name: '',
                 image: '',
             });
         }
     }, [id]);
-
-    const formik = useFormik({
-        initialValues: {
-            name: floor?.name ?? '',
-            image: floor?.image ?? '',
-        },
-        validationSchema: validationSchema,
-        enableReinitialize: true,
-        onSubmit: (values) => {
-            const data = new FormData();
-            data.append('name', values.name);
-            data.append('image', fileRef.current!.files![0]);
-            console.log(values);
-            ApiService.postFormData('floors/', data);
-        },
-    });
 
     return (
         <Box>
@@ -60,51 +44,104 @@ export function ManageFloorsEditPage() {
                 Bereich {floor?.name ?? ''}
             </Typography>
 
-            <Box sx={{mt: 4}}>
-
-                <form onSubmit={formik.handleSubmit}>
-                    <TextField
-                        fullWidth
-                        sx={{mb: 3}}
-
-                        id="name"
-                        name="name"
-                        label="Name des Bereichs"
-
-                        value={formik.values.name}
-                        onChange={formik.handleChange}
-                        error={formik.touched.name && Boolean(formik.errors.name)}
-                        helperText={formik.touched.name && formik.errors.name}
+            <Box
+                sx={{
+                    mt: 2,
+                    borderBottom: 1,
+                    borderColor: 'divider',
+                }}
+            >
+                <Tabs
+                    value={currentTab}
+                    onChange={(_, val) => setCurrentTab(val)}
+                >
+                    <Tab
+                        value={0}
+                        label="Allgemein"
                     />
-
-                    <TextField
-                        fullWidth
-                        sx={{mb: 3}}
-                        inputRef={fileRef}
-
-                        id="image"
-                        name="image"
-                        label="Raumplan"
-                        type="file"
-                        inputProps={{
-                            accept: 'image/*',
-                        }}
-
-                        value={formik.values.image}
-                        onChange={formik.handleChange}
-                        error={formik.touched.image && Boolean(formik.errors.image)}
-                        helperText={formik.touched.image && formik.errors.image}
-                    />
-
-                    <Button
-                        color="primary"
-                        variant="contained"
-                        type="submit"
-                    >
-                        Speichern
-                    </Button>
-                </form>
+                    {
+                        floor != null &&
+                        floor.id !== 0 &&
+                        <Tab
+                            value={1}
+                            label="Tische"
+                        />
+                    }
+                    {
+                        floor != null &&
+                        floor.id !== 0 &&
+                        <Tab
+                            value={2}
+                            label="Räume"
+                        />
+                    }
+                    {
+                        floor != null &&
+                        floor.id !== 0 &&
+                        <Tab
+                            value={3}
+                            label="Zugänge"
+                        />
+                    }
+                    {
+                        floor != null &&
+                        floor.id !== 0 &&
+                        <Tab
+                            value={4}
+                            label="Anzeigen"
+                        />
+                    }
+                </Tabs>
             </Box>
+
+            {
+                floor != null &&
+                <Box sx={{mt: 4}}>
+                    {
+                        currentTab === 0 &&
+                        <ManageFloorsEditPageTabCommon
+                            floor={floor}
+                            onChange={setFloor}
+                        />
+                    }
+
+                    {
+                        currentTab === 1 &&
+                        floor.id !== 0 &&
+                        <ManageFloorsEditPageTabDesks
+                            floor={floor}
+                            onChange={console.log}
+                            desks={[]}
+                        />
+                    }
+
+                    {
+                        currentTab === 2 &&
+                        floor.id !== 0 &&
+                        <ManageFloorsEditPageTabRooms
+                            floor={floor}
+                            onChange={console.log}
+                            rooms={[]}
+                        />
+                    }
+
+                    {
+                        currentTab === 3 &&
+                        floor.id !== 0 &&
+                        <ManageFloorsEditPageTabAccess
+                            floor={floor}
+                        />
+                    }
+
+                    {
+                        currentTab === 4 &&
+                        floor.id !== 0 &&
+                        <ManageFloorsEditPageTabDisplays
+                            floor={floor}
+                        />
+                    }
+                </Box>
+            }
         </Box>
     );
 }

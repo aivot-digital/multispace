@@ -8,6 +8,7 @@ class AccessViewSet(viewsets.ModelViewSet):
     queryset = Access.objects.all()
     serializer_class = AccessSerializer
     permission_classes = [
+        permissions.IsAuthenticated,
         permissions.IsAdminUser,
     ]
     filterset_fields = [

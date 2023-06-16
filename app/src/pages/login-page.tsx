@@ -1,10 +1,11 @@
-import {Box, Button, TextField, Typography} from "@mui/material";
+import {Box, Button, Paper, TextField, Typography} from "@mui/material";
 import {useAppDispatch, useAppSelector} from "../hooks";
 import * as yup from 'yup';
 import {authenticate} from "../features/user";
 import {selectSystemConfig} from "../features/system-config";
 import {SystemConfigKeys} from "../data/system-config-keys";
 import {useFormik} from "formik";
+import LoginBackground from '../assets/login-background.jpg';
 
 const validationSchema = yup.object({
     username: yup
@@ -44,9 +45,12 @@ export function LoginPage() {
                 height: '100vh',
                 justifyContent: 'center',
                 alignItems: 'center',
+                backgroundImage: `url(${LoginBackground})`,
+                backgroundRepeat: 'no-repeat',
+                backgroundSize: 'cover',
             }}
         >
-            <Box sx={{width: '16em'}}>
+            <Paper sx={{width: '22em', px: 4, py: 8}}>
                 <Typography
                     align="center"
                     variant="h4"
@@ -94,7 +98,7 @@ export function LoginPage() {
                         Anmelden
                     </Button>
                 </form>
-            </Box>
+            </Paper>
         </Box>
     );
 }

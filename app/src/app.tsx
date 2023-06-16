@@ -9,6 +9,9 @@ import {Backdrop, Box, CircularProgress} from "@mui/material";
 import {SystemSettingsPage} from "./pages/system-settings-page";
 import {ManageFloorsPage} from "./pages/manage-floors-page";
 import {ManageFloorsEditPage} from "./pages/manage-floors-edit-page";
+import {FloorsPage} from "./pages/floors-page";
+import {ProfilePage} from "./pages/profile-page";
+import {BookingsPage} from "./pages/bookings-page";
 
 
 export function App() {
@@ -40,7 +43,12 @@ export function App() {
                 <Routes>
                     <Route
                         path="/"
-                        element={<div>about</div>}
+                        element={<FloorsPage/>}
+                    />
+
+                    <Route
+                        path="/open-bookings"
+                        element={<BookingsPage/>}
                     />
 
                     <Route
@@ -64,16 +72,22 @@ export function App() {
                     />
 
                     <Route
+                        path="/profile"
+                        element={<ProfilePage/>}
+                    />
+
+                    <Route
                         path="*"
                         element={<div>Not FOUND</div>}
                     />
                 </Routes>
             </Box>
+
             <Backdrop
-                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                sx={{color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1}}
                 open={isLoading}
             >
-                <CircularProgress color="inherit" />
+                <CircularProgress color="inherit"/>
             </Backdrop>
         </Router>
     );

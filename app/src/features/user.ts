@@ -29,7 +29,7 @@ export const fetchUser = createAsyncThunk('user/fetchUser', async (payload: numb
 });
 
 export const fetchUserConfig = createAsyncThunk('user/fetchUserConfig', async () => {
-    const response = await UserConfigApiService.list(0, 999);
+    const response = await UserConfigApiService.list();
     return response.results.reduce((acc, conf) => ({
         ...acc,
         [conf.key]: conf.value,
@@ -41,6 +41,7 @@ export const userSlice = createSlice({
     initialState: initialState,
     reducers: {
         logout: (state) => {
+            state.userId = undefined;
             state.user = undefined;
             state.token = undefined;
 
@@ -59,7 +60,7 @@ export const userSlice = createSlice({
                 localStorage.setItem('userId', action.payload.user_id.toString());
             })
             .addCase(authenticate.rejected, (state, action) => {
-                state.user = undefined;
+                state.userId = undefined;
                 state.token = undefined;
                 state.user = undefined;
 
@@ -69,11 +70,9 @@ export const userSlice = createSlice({
 
             .addCase(fetchUser.fulfilled, (state, action) => {
                 state.user = action.payload;
-
-                console.log(state.user);
             })
             .addCase(fetchUser.rejected, (state, action) => {
-                state.user = undefined;
+                state.userId = undefined;
                 state.token = undefined;
                 state.user = undefined;
 
