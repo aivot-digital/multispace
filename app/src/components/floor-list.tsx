@@ -17,7 +17,6 @@ import {Room} from "../models/room";
 import {Bookmark, BookmarkBorder, Map} from "@mui/icons-material";
 import {DeskBookingWithUser} from "../models/desk-booking";
 import {RoomBookingWithUser} from "../models/room-booking";
-import {useAppSelector} from "../hooks";
 import {format, parseISO} from "date-fns";
 
 
