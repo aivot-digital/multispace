@@ -2,7 +2,7 @@ import {Box, Button, Typography, useTheme} from "@mui/material";
 import {useParams} from "react-router-dom";
 import {useEffect, useMemo, useReducer, useState} from "react";
 import {Room} from "../models/room";
-import {FloorApiService, RoomBookingsApiService, RoomsApiService, UserApiService} from "../services/rest-api-service";
+import {FloorApiService, RoomBookingsApiService, RoomsApiService} from "../services/rest-api-service";
 import {Floor} from "../models/floor";
 import {RoomBookingWithUser} from "../models/room-booking";
 import {useAppDispatch, useAppSelector} from "../hooks";

@@ -1,6 +1,6 @@
 import React from "react";
 import {Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, TextField} from "@mui/material";
-import {FormikConfig, FormikValues, useFormik} from "formik";
+import {useFormik} from "formik";
 import {User} from "../models/user";
 import * as yup from "yup";
 
@@ -12,7 +12,7 @@ const validationSchemaExistingUser = yup.object({
         .trim()
         .min(6, 'Der Benutzername muss mindestens 6 Zeichen haben')
         .max(12, 'Der Benutzername darf maximal 12 Zeichen haben')
-        .matches(/^[a-zA-Z0-9]+$/ , 'Der Benutzername darf nur aus Zahlen, Klein- und Großbuchstaben bestehen'),
+        .matches(/^[a-zA-Z0-9]+$/, 'Der Benutzername darf nur aus Zahlen, Klein- und Großbuchstaben bestehen'),
     password: yup
         .string()
         .min(8, 'Das Passwort muss mindestens 8 Zeichen haben')
@@ -29,7 +29,7 @@ const validationSchemaNewUser = yup.object({
         .required('Der Benutzername ist eine Pflichtangabe')
         .min(6, 'Der Benutzername muss mindestens 6 Zeichen haben')
         .max(12, 'Der Benutzername darf maximal 12 Zeichen haben')
-        .matches(/^[a-zA-Z0-9]+$/ , 'Der Benutzername darf nur aus Zahlen, Klein- und Großbuchstaben bestehen'),
+        .matches(/^[a-zA-Z0-9]+$/, 'Der Benutzername darf nur aus Zahlen, Klein- und Großbuchstaben bestehen'),
     password: yup
         .string()
         .required('Das Passwort ist eine Pflichtangabe')

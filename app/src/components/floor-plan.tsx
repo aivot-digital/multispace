@@ -244,7 +244,7 @@ function ItemRect<T extends Desk | Room>(props: ItemRectProps<T>) {
         }
     };
 
-    const handleTransformEnd = (e: KonvaEventObject<Event>) => {
+    const handleTransformEnd = (_: KonvaEventObject<Event>) => {
         if (props.onChange != null) {
             const node = shapeRef.current;
             const scaleX = node.scaleX();

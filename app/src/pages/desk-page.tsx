@@ -2,7 +2,7 @@ import {Alert, AlertTitle, Box, Button, Typography, useTheme} from "@mui/materia
 import {useParams} from "react-router-dom";
 import {useEffect, useMemo, useState} from "react";
 import {Desk} from "../models/desk";
-import {DeskBookingsApiService, DesksApiService, FloorApiService, UserApiService} from "../services/rest-api-service";
+import {DeskBookingsApiService, DesksApiService, FloorApiService} from "../services/rest-api-service";
 import {Floor} from "../models/floor";
 import {DeskBookingWithUser} from "../models/desk-booking";
 import {BookmarkAddOutlined, BookmarkRemoveOutlined} from "@mui/icons-material";

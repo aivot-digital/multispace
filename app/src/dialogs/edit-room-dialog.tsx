@@ -1,8 +1,7 @@
 import {Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField} from "@mui/material";
 import React from "react";
-import {Desk} from "../models/desk";
 import * as yup from "yup";
-import {FormikConfig, useFormik} from "formik";
+import {useFormik} from "formik";
 import {Room} from "../models/room";
 
 const validationSchema = yup.object({

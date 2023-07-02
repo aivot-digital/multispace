@@ -2,7 +2,7 @@ import {Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField} fr
 import React from "react";
 import {Desk} from "../models/desk";
 import * as yup from "yup";
-import {FormikConfig, useFormik} from "formik";
+import {useFormik} from "formik";
 
 const validationSchema = yup.object({
     name: yup

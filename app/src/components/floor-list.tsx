@@ -39,8 +39,6 @@ interface FloorListProps {
 export function FloorList(props: FloorListProps) {
     const theme = useTheme();
 
-    const userId = useAppSelector(state => state.user.userId);
-
     return (
         <Box>
             <Box

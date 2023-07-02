@@ -1,4 +1,3 @@
-from datetime import datetime
 from django.contrib.auth.models import User
 from django.utils.dateparse import parse_datetime
 from rest_framework import viewsets, permissions

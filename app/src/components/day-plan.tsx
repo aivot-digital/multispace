@@ -218,7 +218,7 @@ export function DayPlan<T extends { id: number }>(props: DayPlanProps<T>) {
                                         {bh.label}
                                     </TableCell>
                                     {
-                                        daysInWeek.map((day, index) => (
+                                        daysInWeek.map(day => (
                                             <TableCell
                                                 key={day.toISOString()}
                                                 sx={{py: 0}}
