@@ -12,3 +12,11 @@ export interface Desk {
 
     floor: number;
 }
+
+export interface DisplayDesk extends Desk {
+    is_blocked: boolean;
+}
+
+export function isDisplayDesk(obj: any): obj is DisplayDesk {
+    return obj != null && obj.is_blocked != null;
+}

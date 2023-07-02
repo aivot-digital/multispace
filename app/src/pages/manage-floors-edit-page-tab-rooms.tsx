@@ -1,153 +1,140 @@
 import React, {useEffect, useState} from "react";
 import {Floor} from "../models/floor";
 import {FloorPlan} from "../components/floor-plan";
-import {Box, Button, Dialog, DialogContent, DialogTitle, TextField} from "@mui/material";
+import {Box, Button, Skeleton} from "@mui/material";
 import {Room} from "../models/room";
-import {Desk} from "../models/desk";
-import {DesksApiService, RoomsApiService} from "../services/rest-api-service";
+import {RoomsApiService} from "../services/rest-api-service";
+import {withDelay} from "../utils/with-delay";
+import {addMessage} from "../features/app";
+import {useAppDispatch} from "../hooks";
+import {EditRoomDialog} from "../dialogs/edit-room-dialog";
 
 interface ManageFloorsEditPageTabRoomsProps {
     floor: Floor;
-    rooms: Room[];
-    onChange: (rooms: Room[]) => void;
+}
+
+function fetchRooms(floor: Floor) {
+    return RoomsApiService
+        .list({
+            floor: floor.id,
+        })
+        .then(res => res.results);
+}
+
+function createRoom(floor: Floor, offset: number) {
+    return RoomsApiService.create({
+        id: 0,
+        name: 'Raum Nr. ' + offset,
+        floor: floor.id,
+        height: 100,
+        width: 50,
+        orientation: 0,
+        pos_x: 100,
+        pos_y: 100,
+        description: '',
+        tags: [],
+    });
 }
 
 export function ManageFloorsEditPageTabRooms(props: ManageFloorsEditPageTabRoomsProps) {
-    const [rooms, setRooms] = useState<Room[]>([]);
+    const dispatch = useAppDispatch();
+    const [rooms, setRooms] = useState<Room[]>();
     const [roomToEdit, setRoomToEdit] = useState<Room>();
 
     useEffect(() => {
-        RoomsApiService.list({floor: props.floor.id.toString()})
-            .then(res => {
-                setRooms(res.results);
-            })
-            .catch(err => {
-                console.error(err);
-            });
-    }, []);
+        withDelay(
+            () => fetchRooms(props.floor),
+            setRooms,
+            500,
+        );
+    }, [props.floor]);
 
     const handleAddRoom = () => {
-        RoomsApiService.create({
-            id: 0,
-            name: 'Neuer Raum',
-            floor: props.floor.id,
-            height: 100,
-            width: 50,
-            orientation: 0,
-            pos_x: 100,
-            pos_y: 100,
-            description: '',
-            tags: [],
-        })
-            .then(res => setRooms([
-                ...rooms,
-                res,
-            ]))
-            .catch(err => {
-                console.error(err);
-            });
-    };
-
-    const handleSave = () => {
         if (rooms != null) {
-            Promise.all(rooms.map(d => RoomsApiService.patch(d.id, d)));
+            createRoom(props.floor, rooms.length)
+                .then(res => setRooms([
+                    ...rooms,
+                    res,
+                ]));
         }
     };
 
-    const handleDelete = () => {
-        // TODO
+    const handleSavePositions = () => {
+        if (rooms != null) {
+            Promise.all(rooms.map(d => RoomsApiService.patch(d.id, d)));
+            dispatch(addMessage({
+                id: 'room_positions_saved',
+                title: 'Positionen gespeichert',
+                message: 'Positionen der Räume erfolgreich gespeichert',
+                severity: 'success',
+            }));
+        }
+    };
+
+    const handleRoomSave = (room: Room) => {
+        if (rooms != null) {
+            RoomsApiService.patch(room.id, room);
+            setRooms(rooms.map(d => d.id === room.id ? room : d));
+            setRoomToEdit(undefined);
+        }
+    };
+
+    const handleRoomDelete = (room: Room) => {
+        if (rooms != null) {
+            RoomsApiService.destroy(room.id);
+            setRooms(rooms.filter(d => d.id !== room.id));
+            setRoomToEdit(undefined);
+        }
     };
 
     return (
-        <Box
-            sx={{
-                height: 'calc(100vh - 320px)',
-            }}
-        >
-            <FloorPlan
-                floor={props.floor}
-                rooms={rooms}
-                onAddRoom={handleAddRoom}
-                onChangeRooms={setRooms}
-                onRoomClick={room => setRoomToEdit({...room})}
-            />
-
-            <Box sx={{mt: 4}}>
+        <>
+            <Box sx={{mb: 2}}>
                 <Button
                     color="primary"
                     variant="contained"
-                    onClick={handleSave}
+                    onClick={handleSavePositions}
+                    size="small"
+                    disabled={rooms == null}
                 >
-                    Speichern
+                    Positionen & Größen Speichern
                 </Button>
             </Box>
 
-            <Dialog
-                open={roomToEdit != null}
-                onClose={() => setRoomToEdit(undefined)}
+            <Box
+                sx={{
+                    height: 'calc(100vh - 320px)',
+                }}
             >
-                <DialogTitle>
-                    Raum bearbeiten
-                </DialogTitle>
-
-                <DialogContent>
-                    <TextField
-                        fullWidth
-                        margin="normal"
-                        label="Name des Raums"
-                        value={roomToEdit?.name ?? ''}
-                        onChange={evt => {
-                            if (roomToEdit != null) {
-                                setRoomToEdit({
-                                    ...roomToEdit,
-                                    name: evt.target.value ?? '',
-                                });
-                            }
-                        }}
+                {
+                    rooms == null &&
+                    <Skeleton
+                        variant="rectangular"
+                        height="100%"
                     />
+                }
 
-                    <TextField
-                        fullWidth
-                        margin="normal"
-                        label="Beschreibung des Raums"
-                        value={roomToEdit?.description ?? ''}
-                        onChange={evt => {
-                            if (roomToEdit != null) {
-                                setRoomToEdit({
-                                    ...roomToEdit,
-                                    description: evt.target.value ?? '',
-                                });
-                            }
-                        }}
-                        multiline
-                        rows={4}
+                {
+                    rooms != null &&
+                    <FloorPlan
+                        floor={props.floor}
+                        rooms={rooms}
+                        onAddRoom={handleAddRoom}
+                        onChangeRooms={setRooms}
+                        onRoomClick={room => setRoomToEdit({...room})}
                     />
+                }
 
-                    <Box>
-                        <Button
-                            onClick={handleDelete}
-                            color="error"
-                        >
-                            Löschen
-                        </Button>
-
-                        <Button
-                            onClick={() => {
-                                setRooms((rooms ?? []).map(d => roomToEdit != null && d.id === roomToEdit.id ? roomToEdit : d));
-                                setRoomToEdit(undefined);
-                            }}
-                        >
-                            Speichern
-                        </Button>
-
-                        <Button
-                            onClick={() => setRoomToEdit(undefined)}
-                        >
-                            Abbrechen
-                        </Button>
-                    </Box>
-                </DialogContent>
-            </Dialog>
-        </Box>
+                {
+                    roomToEdit != null &&
+                    <EditRoomDialog
+                        room={roomToEdit}
+                        onClose={() => setRoomToEdit(undefined)}
+                        onDelete={handleRoomDelete}
+                        onSave={handleRoomSave}
+                    />
+                }
+            </Box>
+        </>
     );
 }

@@ -1,27 +1,17 @@
 import React, {useEffect, useState} from "react";
-import {
-    Box,
-    Button,
-    Paper,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    Typography
-} from "@mui/material";
+import {Button, TableCell} from "@mui/material";
 import {Floor} from "../models/floor";
 import {FloorApiService} from "../services/rest-api-service";
-import {Link} from "react-router-dom";
-import DeleteIcon from "@mui/icons-material/Delete";
+import {Link, useNavigate} from "react-router-dom";
 import {ConfirmDialog} from "../dialogs/confirm-dialog";
-import {FloorTable} from "../components/floor-table";
+import {TableView} from "../components/table-view";
 
 export function ManageFloorsPage() {
+    const navigate = useNavigate();
+
     const [floors, setFloors] = useState<Floor[]>([]);
 
-    const [floor2Delete, setFloor2Delete] = useState<Floor>();
+    const [floorToDelete, setFloorToDelete] = useState<Floor>();
 
     useEffect(() => {
         FloorApiService.list()
@@ -30,54 +20,56 @@ export function ManageFloorsPage() {
 
     return (
         <>
-            <Box>
-                <Box
-                    sx={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                    }}
-                >
-                    <Typography
-                        variant="h5"
-                        component="h1"
-                    >
-                        Bereichsverwaltung
-                    </Typography>
+            <TableView
+                label="Bereichsverwaltung"
+                actions={[{
+                    label: 'Bereich hinzufügen',
+                    onClick: () => navigate('/manage-floors/edit')
+                }]}
+                columLabels={[
+                    'Bereichsname',
+                    'Anzahl Tische',
+                    'Anazahl Zugangsberechtigt',
+                ]}
+                data={floors}
+                cellBuilder={floor => (
+                    <>
+                        <TableCell>
+                            <Button
+                                component={Link}
+                                to={`/manage-floors/edit/${floor.id}`}
+                                sx={{textTransform: 'none'}}
+                            >
+                                {floor.name}
+                            </Button>
+                        </TableCell>
 
-                    <Button
-                        variant="contained"
-                        component={Link}
-                        to={`/manage-floors/edit`}
-                    >
-                        Bereich hinzufügen
-                    </Button>
-                </Box>
+                        <TableCell>
+                            {floor.desk_count}
+                        </TableCell>
 
-                <Box
-                    sx={{
-                        mt: 4,
-                    }}
-                >
-                    <FloorTable
-                        floors={floors}
-                        onDelete={setFloor2Delete}
-                    />
-                </Box>
-            </Box>
+                        <TableCell>
+                            {floor.access_count}
+                        </TableCell>
+                    </>
+                )}
+                getRowId={floor => floor.id}
+                onDelete={setFloorToDelete}
+            />
 
             <ConfirmDialog
-                title={`Bereich "${floor2Delete?.name} löschen`}
-                onClose={() => setFloor2Delete(undefined)}
+                title={`Bereich "${floorToDelete?.name}" löschen`}
+                onClose={() => setFloorToDelete(undefined)}
                 onPositive={() => {
-                    if (floor2Delete != null) {
-                        FloorApiService.destroy(floor2Delete.id);
-                        setFloors(floors.filter(fl => fl !== floor2Delete));
-                        setFloor2Delete(undefined);
+                    if (floorToDelete != null) {
+                        FloorApiService.destroy(floorToDelete.id);
+                        setFloors(floors.filter(fl => fl !== floorToDelete));
+                        setFloorToDelete(undefined);
                     }
                 }}
-                open={floor2Delete != null}
+                open={floorToDelete != null}
             >
-                Soll der Bereich <strong>{floor2Delete?.name}</strong> wirklich gelöscht werden?
+                Soll der Bereich <strong>{floorToDelete?.name}</strong> wirklich gelöscht werden?
             </ConfirmDialog>
         </>
     );

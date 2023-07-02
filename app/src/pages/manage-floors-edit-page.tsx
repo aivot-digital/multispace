@@ -1,14 +1,8 @@
-import React, {useEffect, useRef, useState} from "react";
-import {Box, Button, Tab, Tabs, TextField, Typography} from "@mui/material";
+import React, {SyntheticEvent, useEffect, useState} from "react";
+import {Box, Tab, Tabs, Typography} from "@mui/material";
 import {Floor} from "../models/floor";
 import {FloorApiService} from "../services/rest-api-service";
-import {useNavigate, useParams} from "react-router-dom";
-import * as yup from 'yup';
-import {useFormik} from "formik";
-import {ApiService} from "../services/api-service";
-import {useAppDispatch} from "../hooks";
-import {addMessage, hideLoading, showLoading} from "../features/app";
-import {FloorPlan} from "../components/floor-plan";
+import {useParams} from "react-router-dom";
 import {ManageFloorsEditPageTabCommon} from "./manage-floors-edit-page-tab-common";
 import {ManageFloorsEditPageTabDesks} from "./manage-floors-edit-page-tab-desks";
 import {ManageFloorsEditPageTabRooms} from "./manage-floors-edit-page-tab-rooms";
@@ -53,7 +47,7 @@ export function ManageFloorsEditPage() {
             >
                 <Tabs
                     value={currentTab}
-                    onChange={(_, val) => setCurrentTab(val)}
+                    onChange={(_: SyntheticEvent, val: number) => setCurrentTab(val)}
                 >
                     <Tab
                         value={0}
@@ -110,8 +104,6 @@ export function ManageFloorsEditPage() {
                         floor.id !== 0 &&
                         <ManageFloorsEditPageTabDesks
                             floor={floor}
-                            onChange={console.log}
-                            desks={[]}
                         />
                     }
 
@@ -120,8 +112,6 @@ export function ManageFloorsEditPage() {
                         floor.id !== 0 &&
                         <ManageFloorsEditPageTabRooms
                             floor={floor}
-                            onChange={console.log}
-                            rooms={[]}
                         />
                     }
 

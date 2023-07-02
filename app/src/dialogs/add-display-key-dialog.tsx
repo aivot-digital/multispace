@@ -1,14 +1,16 @@
-import {DialogProps, TextField} from "@mui/material";
-import {FormDialog} from "./form-dialog";
-import {FormikConfig} from "formik";
+import {Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField} from "@mui/material";
+import {useFormik} from "formik";
 import * as yup from "yup";
+import React from "react";
 
 
 const validationSchema = yup.object({
     title: yup
         .string()
         .defined()
-        .required('Der Titel ist eine Pflichtangabe'),
+        .required('Der Titel ist eine Pflichtangabe')
+        .min(6, 'Der Titel muss aus mindestens 6 Zeichen bestehen')
+        .max(191, 'Der Titel darf aus maximal 191 Zeichen bestehen'),
 });
 
 interface AddDisplayKeyDialogProps {
@@ -16,13 +18,8 @@ interface AddDisplayKeyDialogProps {
     onClose: () => void;
 }
 
-export function AddDisplayKeyDialog(props: AddDisplayKeyDialogProps & DialogProps) {
-    const {
-        onAdd,
-        ...dialogProps
-    } = props;
-
-    const formikConfig: FormikConfig<{ title: string, }> = {
+export function AddDisplayKeyDialog(props: AddDisplayKeyDialogProps) {
+    const formik = useFormik({
         initialValues: {
             title: '',
         },
@@ -30,32 +27,51 @@ export function AddDisplayKeyDialog(props: AddDisplayKeyDialogProps & DialogProp
         onSubmit: (values) => {
             props.onAdd(values.title);
         },
-    };
-
-    const handleCancel = () => {
-        props.onClose();
-    };
+    });
 
     return (
-        <FormDialog
-            {...dialogProps}
-            title="Anzeige hinzufügen"
-            onCancel={handleCancel}
-            form={formikConfig}
-            builder={formik => (
-                <TextField
-                    fullWidth
-                    label="Titel der Anzeige"
+        <Dialog
+            open={true}
+            onClose={props.onClose}
+            fullWidth
+        >
+            <DialogTitle>
+                Anzeige hinzufügen
+            </DialogTitle>
 
-                    id="title"
-                    name="title"
+            <form onSubmit={formik.handleSubmit}>
+                <DialogContent>
+                    <TextField
+                        fullWidth
+                        margin="normal"
+                        label="Titel der Anzeige"
 
-                    value={formik.values.username}
-                    onChange={formik.handleChange}
-                    error={formik.touched.username && Boolean(formik.errors.username)}
-                    helperText={formik.touched.username && formik.errors.username}
-                />
-            )}
-        />
+                        id="title"
+                        name="title"
+
+                        value={formik.values.title}
+                        onChange={formik.handleChange}
+                        error={formik.touched.title && Boolean(formik.errors.title)}
+                        helperText={formik.touched.title && formik.errors.title}
+                    />
+                </DialogContent>
+
+                <DialogActions>
+                    <Button
+                        type="submit"
+                    >
+                        Speichern
+                    </Button>
+
+                    <Button
+                        type="button"
+                        onClick={props.onClose}
+                        autoFocus
+                    >
+                        Abbrechen
+                    </Button>
+                </DialogActions>
+            </form>
+        </Dialog>
     );
 }

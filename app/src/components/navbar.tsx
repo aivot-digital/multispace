@@ -10,7 +10,9 @@ import {
     Menu,
     MenuItem,
     Toolbar,
-    Typography
+    Typography,
+    useMediaQuery,
+    useTheme
 } from "@mui/material";
 import {useAppDispatch, useAppSelector} from "../hooks";
 import {selectSystemConfig} from "../features/system-config";
@@ -23,8 +25,10 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import GroupIcon from "@mui/icons-material/Group";
 import BusinessIcon from "@mui/icons-material/Business";
 import {SystemConfigKeys} from "../data/system-config-keys";
+import {Bookmarks, MapSharp} from "@mui/icons-material";
 
 export function Navbar() {
+    const theme = useTheme();
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
 
@@ -39,6 +43,8 @@ export function Navbar() {
     const handleMenuClose = () => {
         setMenuAnchorEl(null);
     };
+
+    const breakpointMdAndUp = useMediaQuery(theme.breakpoints.up('md'));
 
     return (
         <>
@@ -58,24 +64,32 @@ export function Navbar() {
                     </Typography>
 
                     <Box>
-                        <Button
-                            component={Link}
-                            to="/"
-                            color="inherit"
-                            sx={{mr: 4}}
-                        >
-                            Raumplan
-                        </Button>
+                        {
+
+                            breakpointMdAndUp &&
+                            <Button
+                                component={Link}
+                                to="/"
+                                color="inherit"
+                                sx={{mr: 4}}
+                            >
+                                Raumplan
+                            </Button>
+                        }
 
 
-                        <Button
-                            component={Link}
-                            to="/open-bookings"
-                            color="inherit"
-                            sx={{mr: 4}}
-                        >
-                            Buchungen
-                        </Button>
+                        {
+
+                            breakpointMdAndUp &&
+                            <Button
+                                component={Link}
+                                to="/open-bookings"
+                                color="inherit"
+                                sx={{mr: 4}}
+                            >
+                                Buchungen
+                            </Button>
+                        }
 
                         <IconButton
                             color="inherit"
@@ -111,13 +125,55 @@ export function Navbar() {
                     </ListItemText>
                 </MenuItem>
 
+                <Divider/>
+
+                {
+                    !breakpointMdAndUp &&
+                    <MenuItem
+                        onClick={() => {
+                            handleMenuClose();
+                            navigate('/');
+                        }}
+                    >
+                        <ListItemIcon>
+                            <MapSharp fontSize="small"/>
+                        </ListItemIcon>
+                        <ListItemText>
+                            Raumplan
+                        </ListItemText>
+                    </MenuItem>
+                }
+
+                {
+                    !breakpointMdAndUp &&
+                    <MenuItem
+                        onClick={() => {
+                            handleMenuClose();
+                            navigate('/open-bookings');
+                        }}
+                    >
+                        <ListItemIcon>
+                            <Bookmarks fontSize="small"/>
+                        </ListItemIcon>
+                        <ListItemText>
+                            Buchungen
+                        </ListItemText>
+                    </MenuItem>
+                }
+
+                {
+                    !breakpointMdAndUp &&
+                    <Divider/>
+                }
+
                 {
                     user &&
                     user.is_staff &&
                     <MenuItem
-                        component="a"
-                        href="/admin/auth/user/"
-                        target="_blank"
+                        onClick={() => {
+                            handleMenuClose();
+                            navigate('/manage-users');
+                        }}
                     >
                         <ListItemIcon>
                             <GroupIcon fontSize="small"/>

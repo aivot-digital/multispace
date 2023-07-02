@@ -1,7 +1,7 @@
 import {ApiError} from "../models/api-error";
 
 export class ApiService {
-    private static readonly host = 'http://127.0.0.1:8000/api/';
+    private static readonly host = process.env.NODE_ENV === 'production' ? '/api/' : 'http://127.0.0.1:8000/api/';
 
     public static async get<R>(path: string): Promise<R> {
         const res = await fetch(this.host + path, {

@@ -1,17 +1,23 @@
-import {Group, Image, Layer, Rect, Stage, Text, Transformer} from "react-konva";
+import {Image, Layer, Rect, Stage, Text, Transformer} from "react-konva";
 import {Box, Button, Tooltip, useTheme} from "@mui/material";
 import {Floor} from "../models/floor";
 import {useCallback, useEffect, useReducer, useRef, useState} from "react";
-import {AddBox, AddToQueue, Fullscreen, List} from '@mui/icons-material';
-import {Desk} from "../models/desk";
-import {Room} from "../models/room";
+import {AddBox, AddToQueue, List} from '@mui/icons-material';
+import {Desk, isDisplayDesk} from "../models/desk";
+import {isDisplayRoom, Room} from "../models/room";
 import {KonvaEventObject} from "konva/lib/Node";
+import {DeskBookingWithUser} from "../models/desk-booking";
+import {RoomBookingWithUser} from "../models/room-booking";
+import {format, parseISO} from "date-fns";
 
 interface FloorPlanProps {
     floor: Floor;
 
     desks?: Desk[];
     rooms?: Room[];
+
+    deskBookings?: DeskBookingWithUser[];
+    roomBookings?: RoomBookingWithUser[];
 
     onSwitchLayout?: () => void;
 
@@ -70,6 +76,9 @@ export function FloorPlan(props: FloorPlanProps) {
     const heightRatio = containerHeight / image.height;
     const bestRatio = Math.min(widthRatio, heightRatio);
 
+    const offsetX = -((containerWidth - (image.width * bestRatio)) / 2);
+    const offsetY = -((containerHeight - (image.height * bestRatio)) / 2);
+
     return (
         <Box
             ref={containerMountHandler}
@@ -84,9 +93,10 @@ export function FloorPlan(props: FloorPlanProps) {
                 ref={stageRef}
                 width={containerWidth}
                 height={containerHeight}
-                draggable
                 scaleX={bestRatio}
                 scaleY={bestRatio}
+                offsetX={offsetX}
+                offsetY={offsetY}
             >
                 <Layer>
                     <Image
@@ -98,17 +108,21 @@ export function FloorPlan(props: FloorPlanProps) {
                     props.rooms != null &&
                     <Layer>
                         {
-                            props.rooms.map(room => (
-                                <ItemRect
-                                    key={room.id}
-                                    item={room}
-                                    color={theme.palette.warning.main}
-                                    onClick={props.onRoomClick}
-                                    onChange={props.onChangeRooms != null ? (updatedRoom) => {
-                                        props.onChangeRooms!((props.rooms ?? []).map(d => d === room ? updatedRoom : d));
-                                    } : undefined}
-                                />
-                            ))
+                            props.rooms.map(room => {
+                                const bookings = (props.roomBookings ?? []).filter(bk => bk.room === room.id);
+                                return (
+                                    <ItemRect
+                                        key={room.id}
+                                        item={room}
+                                        color={bookings.length > 0 || (isDisplayRoom(room) && room.is_blocked) ? theme.palette.warning.main : theme.palette.info.main}
+                                        onClick={props.onRoomClick}
+                                        onChange={props.onChangeRooms != null ? (updatedRoom) => {
+                                            props.onChangeRooms!((props.rooms ?? []).map(d => d === room ? updatedRoom : d));
+                                        } : undefined}
+                                        subtext={bookings.length > 0 ? '\n' + bookings.map(bk => `${format(parseISO(bk.start), 'HH:mm')} - ${format(parseISO(bk.end), 'HH:mm')}`).join('\n') : undefined}
+                                    />
+                                );
+                            })
                         }
                     </Layer>
                 }
@@ -117,17 +131,21 @@ export function FloorPlan(props: FloorPlanProps) {
                     props.desks != null &&
                     <Layer>
                         {
-                            props.desks.map(desk => (
-                                <ItemRect
-                                    key={desk.id}
-                                    item={desk}
-                                    color={theme.palette.info.main}
-                                    onClick={props.onDeskClick}
-                                    onChange={props.onChangeDesks != null ? (updatedDesk) => {
-                                        props.onChangeDesks!((props.desks ?? []).map(d => d === desk ? updatedDesk : d));
-                                    } : undefined}
-                                />
-                            ))
+                            props.desks.map(desk => {
+                                const booking = (props.deskBookings ?? []).find(bk => bk.desk === desk.id);
+                                return (
+                                    <ItemRect
+                                        key={desk.id}
+                                        item={desk}
+                                        color={booking != null || (isDisplayDesk(desk) && desk.is_blocked) ? theme.palette.warning.main : theme.palette.info.main}
+                                        onClick={props.onDeskClick}
+                                        onChange={props.onChangeDesks != null ? (updatedDesk) => {
+                                            props.onChangeDesks!((props.desks ?? []).map(d => d === desk ? updatedDesk : d));
+                                        } : undefined}
+                                        subtext={booking != null ? booking.user.username : undefined}
+                                    />
+                                );
+                            })
                         }
                     </Layer>
                 }
@@ -184,24 +202,6 @@ export function FloorPlan(props: FloorPlanProps) {
                         </Button>
                     </Tooltip>
                 }
-
-                <Tooltip title="Zurücksetzen">
-                    <Button
-                        variant="contained"
-                        size="small"
-                        sx={{
-                            minWidth: '0',
-                            ml: 1,
-                        }}
-                        onClick={() => {
-                            if (stageRef.current != null) {
-                                stageRef.current.position({x: 0, y: 0});
-                            }
-                        }}
-                    >
-                        <Fullscreen/>
-                    </Button>
-                </Tooltip>
             </Box>
         </Box>
     );
@@ -212,6 +212,7 @@ interface ItemRectProps<T> {
     color: string;
     onClick?: (item: T) => void;
     onChange?: (item: T) => void;
+    subtext?: string;
 }
 
 function ItemRect<T extends Desk | Room>(props: ItemRectProps<T>) {
@@ -256,6 +257,8 @@ function ItemRect<T extends Desk | Room>(props: ItemRectProps<T>) {
                 ...props.item,
                 width: Math.max(64, node.width() * scaleX),
                 height: Math.max(64, node.height() * scaleY),
+                pos_x: node.getX(),
+                pos_y: node.getY(),
                 orientation: node.rotation(),
             });
         }
@@ -263,7 +266,6 @@ function ItemRect<T extends Desk | Room>(props: ItemRectProps<T>) {
 
     return (
         <>
-
             <Rect
                 ref={shapeRef}
                 onTransformEnd={props.onChange != null ? handleTransformEnd : undefined}
@@ -289,10 +291,10 @@ function ItemRect<T extends Desk | Room>(props: ItemRectProps<T>) {
             />
 
             <Text
-                text={props.item.name}
+                text={props.item.name + (props.subtext != null ? `\n${props.subtext}` : '')}
                 align="center"
                 verticalAlign="middle"
-                fontSize={32}
+                fontSize={22}
                 listening={false}
 
                 x={props.item.pos_x}

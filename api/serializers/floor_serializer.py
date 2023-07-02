@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
-from api.serializers.desk_serializer import DeskSerializer
-from api.serializers.room_serializer import RoomSerializer
+from api.serializers.desk_serializer import DeskDisplaySerializer
+from api.serializers.room_serializer import RoomDisplaySerializer
 from core.models import Floor
 
 
@@ -20,6 +20,6 @@ class FloorSerializer(serializers.ModelSerializer):
         return obj.accesses.count()
 
 
-class NestedFloorSerializer(FloorSerializer):
-    desks = DeskSerializer(many=True)
-    rooms = RoomSerializer(many=True)
+class FloorDisplaySerializer(FloorSerializer):
+    desks = DeskDisplaySerializer(many=True, read_only=True)
+    rooms = RoomDisplaySerializer(many=True, read_only=True)

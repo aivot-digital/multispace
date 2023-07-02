@@ -8,6 +8,10 @@ from core.models import Floor
 class FloorViewSet(viewsets.ModelViewSet):
     serializer_class = FloorSerializer
 
+    filterset_fields = [
+        'accesses__user',
+    ]
+
     def get_queryset(self):
         user: User = self.request.user
         if user.is_staff:

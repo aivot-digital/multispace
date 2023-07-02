@@ -1,11 +1,11 @@
 import {Box, Button, Paper, TextField, Typography} from "@mui/material";
-import {useAppDispatch, useAppSelector} from "../hooks";
+import {useAppDispatch} from "../hooks";
 import * as yup from 'yup';
 import {authenticate} from "../features/user";
-import {selectSystemConfig} from "../features/system-config";
-import {SystemConfigKeys} from "../data/system-config-keys";
 import {useFormik} from "formik";
 import LoginBackground from '../assets/login-background.jpg';
+import {Helmet} from "react-helmet";
+import {ArrowForward} from "@mui/icons-material";
 
 const validationSchema = yup.object({
     username: yup
@@ -18,10 +18,8 @@ const validationSchema = yup.object({
         .required('Passwort ist eine Pflichtangabe'),
 });
 
-export function LoginPage() {
+export function LoginPage({brand}: { brand: string }) {
     const dispatch = useAppDispatch();
-
-    const brand = useAppSelector(selectSystemConfig(SystemConfigKeys.Brand, 'MultiSpace'));
 
     const formik = useFormik({
         initialValues: {
@@ -38,67 +36,74 @@ export function LoginPage() {
     });
 
     return (
-        <Box
-            sx={{
-                display: 'flex',
-                width: '100vw',
-                height: '100vh',
-                justifyContent: 'center',
-                alignItems: 'center',
-                backgroundImage: `url(${LoginBackground})`,
-                backgroundRepeat: 'no-repeat',
-                backgroundSize: 'cover',
-            }}
-        >
-            <Paper sx={{width: '22em', px: 4, py: 8}}>
-                <Typography
-                    align="center"
-                    variant="h4"
-                    sx={{mb: 4}}
-                >
-                    {brand}
-                </Typography>
+        <>
+            <Helmet>
+                <title>{brand}</title>
+            </Helmet>
 
-                <form onSubmit={formik.handleSubmit}>
-                    <TextField
-                        fullWidth
-                        sx={{mb: 2}}
-                        label="Benutzername"
-
-                        id="username"
-                        name="username"
-
-                        value={formik.values.username}
-                        onChange={formik.handleChange}
-                        error={formik.touched.username && Boolean(formik.errors.username)}
-                        helperText={formik.touched.username && formik.errors.username}
-                    />
-
-                    <TextField
-                        fullWidth
-                        sx={{mb: 2}}
-                        label="Passwort"
-                        type="password"
-
-                        id="password"
-                        name="password"
-
-                        value={formik.values.password}
-                        onChange={formik.handleChange}
-                        error={formik.touched.password && Boolean(formik.errors.password)}
-                        helperText={formik.touched.password && formik.errors.password}
-                    />
-
-                    <Button
-                        fullWidth
-                        color="primary"
-                        variant="outlined"
-                        type="submit"
+            <Box
+                sx={{
+                    display: 'flex',
+                    width: '100vw',
+                    height: '100vh',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    backgroundImage: `url(${LoginBackground})`,
+                    backgroundRepeat: 'no-repeat',
+                    backgroundSize: 'cover',
+                }}
+            >
+                <Paper sx={{width: '22em', px: 4, py: 4}}>
+                    <Typography
+                        align="center"
+                        variant="h4"
+                        sx={{mb: 4}}
                     >
-                        Anmelden
-                    </Button>
-                </form>
-            </Paper>
-        </Box>
+                        {brand}
+                    </Typography>
+
+                    <form onSubmit={formik.handleSubmit}>
+                        <TextField
+                            fullWidth
+                            sx={{mb: 2}}
+                            label="Benutzername"
+
+                            id="username"
+                            name="username"
+
+                            value={formik.values.username}
+                            onChange={formik.handleChange}
+                            error={formik.touched.username && Boolean(formik.errors.username)}
+                            helperText={formik.touched.username && formik.errors.username}
+                        />
+
+                        <TextField
+                            fullWidth
+                            sx={{mb: 2}}
+                            label="Passwort"
+                            type="password"
+
+                            id="password"
+                            name="password"
+
+                            value={formik.values.password}
+                            onChange={formik.handleChange}
+                            error={formik.touched.password && Boolean(formik.errors.password)}
+                            helperText={formik.touched.password && formik.errors.password}
+                        />
+
+                        <Button
+                            fullWidth
+                            color="primary"
+                            variant="outlined"
+                            type="submit"
+                            endIcon={<ArrowForward/>}
+                        >
+                            Anmelden
+                        </Button>
+                    </form>
+                </Paper>
+            </Box>
+        </>
     );
 }

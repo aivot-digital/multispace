@@ -2,6 +2,7 @@ import {
     Box,
     Button,
     Paper,
+    Skeleton,
     Tab,
     Table,
     TableBody,
@@ -20,12 +21,15 @@ import {
     RoomBookingsApiService,
     RoomsApiService
 } from "../services/rest-api-service";
-import {useAppDispatch, useAppSelector} from "../hooks";
+import {useAppSelector} from "../hooks";
 import {Desk} from "../models/desk";
 import {Room} from "../models/room";
 import {DeskBooking} from "../models/desk-booking";
 import {RoomBooking} from "../models/room-booking";
 import {format, parseISO} from 'date-fns';
+import {Link} from "react-router-dom";
+import {BookmarkRemoveOutlined} from "@mui/icons-material";
+import de from "date-fns/locale/de";
 
 export function BookingsPage() {
     const today = new Date();
@@ -33,37 +37,58 @@ export function BookingsPage() {
 
     const [currentTab, setCurrentTab] = useState(0);
 
-    const [floors, setFloors] = useState<Floor[]>([]);
+    const [floors, setFloors] = useState<Floor[]>();
 
-    const [desks, setDesks] = useState<Desk[]>([]);
-    const [rooms, setRooms] = useState<Room[]>([]);
+    const [desks, setDesks] = useState<Desk[]>();
+    const [rooms, setRooms] = useState<Room[]>();
 
-    const [desksBookings, setDeskBookings] = useState<DeskBooking[]>([]);
-    const [roomBookings, setRoomBookings] = useState<RoomBooking[]>([]);
+    const [desksBookings, setDeskBookings] = useState<DeskBooking[]>();
+    const [roomBookings, setRoomBookings] = useState<RoomBooking[]>();
 
     useEffect(() => {
-        FloorApiService.list().then(res => setFloors(res.results));
-        DesksApiService.list().then(res => setDesks(res.results));
-        RoomsApiService.list().then(res => setRooms(res.results));
+        FloorApiService
+            .list()
+            .then(res => setFloors(res.results));
+
+        DesksApiService
+            .list()
+            .then(res => setDesks(res.results));
+
+        RoomsApiService
+            .list()
+            .then(res => setRooms(res.results));
     }, []);
 
     useEffect(() => {
         if (userId != null) {
             DeskBookingsApiService.list({
                 user: userId.toString(),
-                date__year__gte: today.getFullYear(),
-                date__month__gte: today.getMonth(),
-                date__day__gte: today.getMonth(),
+                date__gte: today.toISOString(),
             }).then(res => setDeskBookings(res.results));
 
             RoomBookingsApiService.list({
                 user: userId.toString(),
-                started__year__gte: today.getFullYear(),
-                started__month__gte: today.getMonth(),
-                started__day__gte: today.getMonth(),
+                start__gte: today.toISOString(),
             }).then(res => setRoomBookings(res.results));
         }
     }, [userId]);
+
+    const handleRevokeDeskBooking = (booking: DeskBooking) => {
+        DeskBookingsApiService.destroy(booking.id);
+        setDeskBookings((desksBookings ?? []).filter(b => b !== booking));
+    };
+
+    const handleRvokeRoomBooking = (booking: RoomBooking) => {
+        RoomBookingsApiService.destroy(booking.id);
+        setRoomBookings((roomBookings ?? []).filter(b => b !== booking));
+    };
+
+    const hasLoaded =
+        floors != null &&
+        desks != null &&
+        rooms != null &&
+        desksBookings != null &&
+        roomBookings != null;
 
     return (
         <Box>
@@ -115,22 +140,55 @@ export function BookingsPage() {
 
                             <TableBody>
                                 {
+                                    !hasLoaded &&
+                                    <TableRow>
+                                        <TableCell>
+                                            <Skeleton variant="rectangular"/>
+                                        </TableCell>
+                                        <TableCell>
+                                            <Skeleton variant="rectangular"/>
+                                        </TableCell>
+                                        <TableCell>
+                                            <Skeleton variant="rectangular"/>
+                                        </TableCell>
+                                        <TableCell>
+                                            <Skeleton variant="rectangular"/>
+                                        </TableCell>
+                                    </TableRow>
+                                }
+
+                                {
+                                    hasLoaded &&
+                                    desksBookings.length === 0 &&
+                                    <TableRow>
+                                        <TableCell colSpan={4}>
+                                            Keine Tischbuchungen vorhanden
+                                        </TableCell>
+                                    </TableRow>
+                                }
+
+                                {
+                                    hasLoaded &&
                                     desksBookings.map(db => {
                                         const desk = desks.find(d => d.id === db.desk);
                                         const floor = desk != null ? floors.find(f => f.id === desk.floor) : undefined;
                                         return (
                                             <TableRow key={db.id}>
                                                 <TableCell>
-                                                    {format(parseISO(db.date), 'dd.MM.yyyy')}
+                                                    {format(parseISO(db.date), 'dd.MM.yyyy', {locale: de})}
                                                 </TableCell>
                                                 <TableCell>
                                                     {floor?.name ?? ''}
                                                 </TableCell>
                                                 <TableCell>
-                                                    {desk?.name ?? ''}
+                                                    <Link to={`/desks/${desk?.id}`}>{desk?.name ?? ''}</Link>
                                                 </TableCell>
                                                 <TableCell>
-                                                    <Button color="error">
+                                                    <Button
+                                                        color="error"
+                                                        startIcon={<BookmarkRemoveOutlined/>}
+                                                        onClick={() => handleRevokeDeskBooking(db)}
+                                                    >
                                                         Stornieren
                                                     </Button>
                                                 </TableCell>
@@ -164,24 +222,57 @@ export function BookingsPage() {
 
                             <TableBody>
                                 {
+                                    !hasLoaded &&
+                                    <TableRow>
+                                        <TableCell>
+                                            <Skeleton variant="rectangular"/>
+                                        </TableCell>
+                                        <TableCell>
+                                            <Skeleton variant="rectangular"/>
+                                        </TableCell>
+                                        <TableCell>
+                                            <Skeleton variant="rectangular"/>
+                                        </TableCell>
+                                        <TableCell>
+                                            <Skeleton variant="rectangular"/>
+                                        </TableCell>
+                                    </TableRow>
+                                }
+
+                                {
+                                    hasLoaded &&
+                                    roomBookings.length === 0 &&
+                                    <TableRow>
+                                        <TableCell colSpan={4}>
+                                            Keine Raumbuchungen vorhanden
+                                        </TableCell>
+                                    </TableRow>
+                                }
+
+                                {
+                                    hasLoaded &&
                                     roomBookings.map(rb => {
                                         const room = rooms.find(d => d.id === rb.room);
                                         const floor = room != null ? floors.find(f => f.id === room.floor) : undefined;
                                         return (
                                             <TableRow key={rb.id}>
                                                 <TableCell>
-                                                    {format(parseISO(rb.start), 'dd.MM.yyyy hh:mm')}
+                                                    {format(parseISO(rb.start), 'dd.MM.yyyy HH:mm', {locale: de})}
                                                     <br/>bis<br/>
-                                                    {format(parseISO(rb.end), 'dd.MM.yyyy hh:mm')}
+                                                    {format(parseISO(rb.end), 'dd.MM.yyyy HH:mm', {locale: de})}
                                                 </TableCell>
                                                 <TableCell>
                                                     {floor?.name ?? ''}
                                                 </TableCell>
                                                 <TableCell>
-                                                    {room?.name ?? ''}
+                                                    <Link to={`/rooms/${room?.id}`}>{room?.name ?? ''}</Link>
                                                 </TableCell>
                                                 <TableCell>
-                                                    <Button color="error">
+                                                    <Button
+                                                        color="error"
+                                                        startIcon={<BookmarkRemoveOutlined/>}
+                                                        onClick={() => handleRvokeRoomBooking(rb)}
+                                                    >
                                                         Stornieren
                                                     </Button>
                                                 </TableCell>

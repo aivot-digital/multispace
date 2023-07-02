@@ -1,152 +1,140 @@
 import React, {useEffect, useState} from "react";
 import {Floor} from "../models/floor";
 import {FloorPlan} from "../components/floor-plan";
-import {Box, Button, Dialog, DialogContent, DialogTitle, TextField} from "@mui/material";
+import {Box, Button, Skeleton} from "@mui/material";
 import {Desk} from "../models/desk";
 import {DesksApiService} from "../services/rest-api-service";
+import {EditDeskDialog} from "../dialogs/edit-desk-dialog";
+import {withDelay} from "../utils/with-delay";
+import {useAppDispatch} from "../hooks";
+import {addMessage} from "../features/app";
 
 interface ManageFloorsEditPageTabDesksProps {
     floor: Floor;
-    desks: Desk[];
-    onChange: (desks: Desk[]) => void;
+}
+
+function fetchDesks(floor: Floor) {
+    return DesksApiService
+        .list({
+            floor: floor.id,
+        })
+        .then(res => res.results);
+}
+
+function createDesk(floor: Floor, offset: number) {
+    return DesksApiService.create({
+        id: 0,
+        name: 'Tisch Nr. ' + offset,
+        floor: floor.id,
+        height: 100,
+        width: 50,
+        orientation: 0,
+        pos_x: 100,
+        pos_y: 100,
+        description: '',
+        tags: [],
+    });
 }
 
 export function ManageFloorsEditPageTabDesks(props: ManageFloorsEditPageTabDesksProps) {
-    const [desks, setDesks] = useState<Desk[]>([]);
+    const dispatch = useAppDispatch();
+    const [desks, setDesks] = useState<Desk[]>();
     const [deskToEdit, setDeskToEdit] = useState<Desk>();
 
     useEffect(() => {
-        DesksApiService.list({floor: props.floor.id.toString()})
-            .then(res => {
-                setDesks(res.results);
-            })
-            .catch(err => {
-                console.error(err);
-            });
+        withDelay(
+            () => fetchDesks(props.floor),
+            setDesks,
+            500,
+        );
     }, []);
 
     const handleAddDesk = () => {
-        DesksApiService.create({
-            id: 0,
-            name: 'Neuer Tisch',
-            floor: props.floor.id,
-            height: 100,
-            width: 50,
-            orientation: 0,
-            pos_x: 100,
-            pos_y: 100,
-            description: '',
-            tags: [],
-        })
-            .then(res => setDesks([
-                ...desks,
-                res,
-            ]))
-            .catch(err => {
-                console.error(err);
-            });
-    };
-
-    const handleSave = () => {
         if (desks != null) {
-            Promise.all(desks.map(d => DesksApiService.patch(d.id, d)));
+            createDesk(props.floor, desks.length + 1)
+                .then(res => setDesks([
+                    ...desks,
+                    res,
+                ]));
         }
     };
 
-    const handleDelete = () => {
-        // TODO
+    const handleSavePositions = () => {
+        if (desks != null) {
+            Promise.all(desks.map(d => DesksApiService.patch(d.id, d)));
+            dispatch(addMessage({
+                id: 'desk_positions_saved',
+                title: 'Positionen gespeichert',
+                message: 'Positionen der Tische erfolgreich gespeichert',
+                severity: 'success',
+            }));
+        }
+    };
+
+    const handleDeskSave = (desk: Desk) => {
+        if (desks != null) {
+            DesksApiService.patch(desk.id, desk);
+            setDesks(desks.map(d => d.id === desk.id ? desk : d));
+            setDeskToEdit(undefined);
+        }
+    };
+
+    const handleDeskDelete = (desk: Desk) => {
+        if (desks != null) {
+            DesksApiService.destroy(desk.id);
+            setDesks(desks.filter(d => d.id !== desk.id));
+            setDeskToEdit(undefined);
+        }
     };
 
     return (
-        <Box
-            sx={{
-                height: 'calc(100vh - 320px)',
-            }}
-        >
-            <FloorPlan
-                floor={props.floor}
-                desks={desks}
-                onAddDesk={handleAddDesk}
-                onChangeDesks={setDesks}
-                onDeskClick={desk => setDeskToEdit({...desk})}
-            />
-
-            <Box sx={{mt: 4}}>
+        <>
+            <Box sx={{mb: 2}}>
                 <Button
                     color="primary"
                     variant="contained"
-                    onClick={handleSave}
+                    onClick={handleSavePositions}
+                    size="small"
+                    disabled={desks == null}
                 >
-                    Speichern
+                    Positionen & Größen Speichern
                 </Button>
             </Box>
 
-            <Dialog
-                open={deskToEdit != null}
-                onClose={() => setDeskToEdit(undefined)}
+            <Box
+                sx={{
+                    height: 'calc(100vh - 320px)',
+                }}
             >
-                <DialogTitle>
-                    Tisch bearbeiten
-                </DialogTitle>
-
-                <DialogContent>
-                    <TextField
-                        fullWidth
-                        margin="normal"
-                        label="Name des Tisches"
-                        value={deskToEdit?.name ?? ''}
-                        onChange={evt => {
-                            if (deskToEdit != null) {
-                                setDeskToEdit({
-                                    ...deskToEdit,
-                                    name: evt.target.value ?? '',
-                                });
-                            }
-                        }}
+                {
+                    desks == null &&
+                    <Skeleton
+                        variant="rectangular"
+                        height="100%"
                     />
+                }
 
-                    <TextField
-                        fullWidth
-                        margin="normal"
-                        label="Beschreibung des Tisches"
-                        value={deskToEdit?.description ?? ''}
-                        onChange={evt => {
-                            if (deskToEdit != null) {
-                                setDeskToEdit({
-                                    ...deskToEdit,
-                                    description: evt.target.value ?? '',
-                                });
-                            }
-                        }}
-                        multiline
-                        rows={4}
+                {
+                    desks != null &&
+                    <FloorPlan
+                        floor={props.floor}
+                        desks={desks}
+                        onAddDesk={handleAddDesk}
+                        onChangeDesks={setDesks}
+                        onDeskClick={desk => setDeskToEdit({...desk})}
                     />
+                }
+            </Box>
 
-                    <Box>
-                        <Button
-                            onClick={handleDelete}
-                            color="error"
-                        >
-                            Löschen
-                        </Button>
-
-                        <Button
-                            onClick={() => {
-                                setDesks((desks ?? []).map(d => deskToEdit != null && d.id === deskToEdit.id ? deskToEdit : d));
-                                setDeskToEdit(undefined);
-                            }}
-                        >
-                            Speichern
-                        </Button>
-
-                        <Button
-                            onClick={() => setDeskToEdit(undefined)}
-                        >
-                            Abbrechen
-                        </Button>
-                    </Box>
-                </DialogContent>
-            </Dialog>
-        </Box>
+            {
+                deskToEdit != null &&
+                <EditDeskDialog
+                    desk={deskToEdit}
+                    onClose={() => setDeskToEdit(undefined)}
+                    onDelete={handleDeskDelete}
+                    onSave={handleDeskSave}
+                />
+            }
+        </>
     );
 }

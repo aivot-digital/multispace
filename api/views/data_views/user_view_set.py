@@ -8,13 +8,19 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
+    filterset_fields = [
+        'id',
+    ]
+
     def get_permissions(self):
         if self.action in ['create', 'destroy']:
             return [
+                permissions.IsAuthenticated(),
                 permissions.IsAdminUser(),
             ]
         elif self.action in ['update', 'partial_update']:
             return [
+                permissions.IsAuthenticated(),
                 permissions.IsAdminUser(),
             ]
         else:

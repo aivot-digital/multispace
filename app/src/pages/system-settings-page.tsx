@@ -36,15 +36,19 @@ export function SystemSettingsPage() {
                 Systemeinstellungen
             </Typography>
 
-            <Paper
-                sx={{
-                    mt: 4,
-                    p: 4,
-                }}
-            >
-                <form onSubmit={formik.handleSubmit}>
+            <form onSubmit={formik.handleSubmit}>
+                <Paper
+                    sx={{
+                        mt: 4,
+                        mb: 4,
+                        px: 4,
+                        py: 2,
+                    }}
+                >
+
                     <TextField
                         fullWidth
+                        margin="normal"
                         label="Name der Installation"
 
                         id="brand"
@@ -55,30 +59,30 @@ export function SystemSettingsPage() {
                         error={formik.touched.brand && Boolean(formik.errors.brand)}
                         helperText={formik.touched.brand && formik.errors.brand}
                     />
+                </Paper>
 
-                    <Box sx={{mt: 4}}>
-                        <Button
-                            color="primary"
-                            variant="outlined"
-                            type="submit"
-                            sx={{mr: 2}}
-                            startIcon={<SaveOutlined/>}
-                        >
-                            Speichern
-                        </Button>
+                <Box sx={{mt: 4}}>
+                    <Button
+                        color="primary"
+                        variant="contained"
+                        type="submit"
+                        sx={{mr: 2}}
+                        startIcon={<SaveOutlined/>}
+                    >
+                        Speichern
+                    </Button>
 
-                        <Button
-                            color="error"
-                            variant="outlined"
-                            type="reset"
-                            onClick={() => formik.resetForm()}
-                            startIcon={<RestartAltOutlined/>}
-                        >
-                            Zurücksetzen
-                        </Button>
-                    </Box>
-                </form>
-            </Paper>
+                    <Button
+                        color="error"
+                        variant="contained"
+                        type="reset"
+                        onClick={() => formik.resetForm()}
+                        startIcon={<RestartAltOutlined/>}
+                    >
+                        Zurücksetzen
+                    </Button>
+                </Box>
+            </form>
         </Box>
     );
 }

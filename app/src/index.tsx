@@ -11,16 +11,24 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 
-import  './index.css';
+import './index.css';
+import {AdapterDateFns} from "@mui/x-date-pickers/AdapterDateFns";
+import {LocalizationProvider} from "@mui/x-date-pickers";
+import de from "date-fns/locale/de";
 
 const root = ReactDOM.createRoot(
     document.getElementById('root') as HTMLElement
 );
 root.render(
     <React.StrictMode>
-        <CssBaseline />
+        <CssBaseline/>
         <Provider store={store}>
-            <App/>
+            <LocalizationProvider
+                dateAdapter={AdapterDateFns}
+                adapterLocale={de}
+            >
+                <App/>
+            </LocalizationProvider>
         </Provider>
     </React.StrictMode>
 );

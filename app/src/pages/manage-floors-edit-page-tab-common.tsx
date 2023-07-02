@@ -1,14 +1,12 @@
-import React, {useEffect, useRef, useState} from "react";
-import {Box, Button, Paper, Tab, Tabs, TextField, Typography} from "@mui/material";
+import React, {useRef} from "react";
+import {Button, Paper, TextField} from "@mui/material";
 import {Floor} from "../models/floor";
-import {FloorApiService} from "../services/rest-api-service";
-import {useNavigate, useParams} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import * as yup from 'yup';
 import {useFormik} from "formik";
 import {ApiService} from "../services/api-service";
 import {useAppDispatch} from "../hooks";
 import {addMessage, hideLoading, showLoading} from "../features/app";
-import {FloorPlan} from "../components/floor-plan";
 
 const newFloorValidationSchema = yup.object({
     name: yup

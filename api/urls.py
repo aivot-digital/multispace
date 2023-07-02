@@ -13,6 +13,7 @@ from api.views.data_views.system_config_view_set import SystemConfigViewSet
 from api.views.data_views.user_config_view_set import UserConfigViewSet
 from api.views.data_views.user_view_set import UserViewSet
 from api.views.display_view import DisplayView
+from api.views.password_view import PasswordView
 
 router = routers.SimpleRouter()
 router.register(r'accesses', AccessViewSet, basename='accesses')
@@ -28,5 +29,6 @@ router.register(r'users', UserViewSet, basename='users')
 
 urlpatterns = [
                   path('auth/', AuthView.as_view()),
+                  path('auth/set-password/', PasswordView.as_view()),
                   path('display/<str:display_key>/', DisplayView.as_view()),
               ] + router.urls

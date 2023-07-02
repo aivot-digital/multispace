@@ -1,24 +1,26 @@
-import {Box, Button, TextField, Typography} from "@mui/material";
-import {useAppDispatch, useAppSelector} from "../hooks";
+import {Box, Button, Paper, TextField, Typography, useTheme} from "@mui/material";
+import {useAppSelector} from "../hooks";
 import * as yup from 'yup';
-import {authenticate} from "../features/user";
-import {selectSystemConfig} from "../features/system-config";
-import {SystemConfigKeys} from "../data/system-config-keys";
 import {useFormik} from "formik";
-import {UserApiService} from "../services/rest-api-service";
+import {RestartAltOutlined, SaveOutlined} from "@mui/icons-material";
+import {ApiService} from "../services/api-service";
 
 const validationSchema = yup.object({
     password: yup
         .string()
         .defined()
-        .required('Das Passwort ist eine Pflichtangabe'),
+        .required('Das Passwort ist eine Pflichtangabe')
+        .min(8, 'Das Passwort muss mindestens 8 Zeichen haben')
+        .max(72, 'Das Passwort darf maximal 72 Zeichen haben'),
     passwordTwo: yup
         .string()
         .defined()
-        .required('Die Wiederholung des Passworts ist eine Pflichtangabe'),
+        .required('Die Wiederholung des Passworts ist eine Pflichtangabe')
+        .oneOf([yup.ref('password')], 'Die eingegebenen Passwörter stimmen nicht überein'),
 });
 
 export function ProfilePage() {
+    const theme = useTheme();
     const userId = useAppSelector(state => state.user.userId);
 
     const formik = useFormik({
@@ -29,9 +31,11 @@ export function ProfilePage() {
         validationSchema: validationSchema,
         onSubmit: (values) => {
             if (userId != null) {
-                UserApiService.patch(userId, {
+                ApiService.post('auth/set-password/', {
+                    user: userId,
                     password: values.password,
                 });
+                formik.resetForm();
             }
         },
     });
@@ -48,45 +52,86 @@ export function ProfilePage() {
                 </Typography>
 
                 <form onSubmit={formik.handleSubmit}>
-                    <TextField
-                        fullWidth
-                        sx={{mb: 2}}
-                        label="Passwort"
-                        type="password"
-
-                        id="password"
-                        name="password"
-                        required
-
-                        value={formik.values.password}
-                        onChange={formik.handleChange}
-                        error={formik.touched.password && Boolean(formik.errors.password)}
-                        helperText={formik.touched.password && formik.errors.password}
-                    />
-
-                    <TextField
-                        fullWidth
-                        sx={{mb: 2}}
-                        label="Passwort wiederholen"
-                        type="password"
-
-                        id="passwordTwo"
-                        name="passwordTwo"
-                        required
-
-                        value={formik.values.passwordTwo}
-                        onChange={formik.handleChange}
-                        error={formik.touched.passwordTwo && Boolean(formik.errors.passwordTwo)}
-                        helperText={formik.touched.passwordTwo && formik.errors.passwordTwo}
-                    />
-
-                    <Button
-                        color="primary"
-                        variant="outlined"
-                        type="submit"
+                    <Paper
+                        sx={{
+                            py: 1,
+                            px: 2,
+                            mb: 4,
+                            [theme.breakpoints.up('sm')]: {
+                                py: 2,
+                                px: 4,
+                            },
+                        }}
                     >
-                        Speichern
-                    </Button>
+                        <TextField
+                            fullWidth
+                            margin="normal"
+                            label="Passwort"
+                            type="password"
+
+                            id="password"
+                            name="password"
+                            required
+
+                            value={formik.values.password}
+                            onChange={formik.handleChange}
+                            error={formik.touched.password && Boolean(formik.errors.password)}
+                            helperText={formik.touched.password && formik.errors.password}
+                        />
+
+                        <TextField
+                            fullWidth
+                            margin="normal"
+                            label="Passwort wiederholen"
+                            type="password"
+
+                            id="passwordTwo"
+                            name="passwordTwo"
+                            required
+
+                            value={formik.values.passwordTwo}
+                            onChange={formik.handleChange}
+                            error={formik.touched.passwordTwo && Boolean(formik.errors.passwordTwo)}
+                            helperText={formik.touched.passwordTwo && formik.errors.passwordTwo}
+                        />
+                    </Paper>
+
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+
+                            [theme.breakpoints.up('sm')]: {
+                                flexDirection: 'row',
+                            },
+                        }}
+                    >
+                        <Button
+                            color="primary"
+                            variant="contained"
+                            type="submit"
+                            startIcon={<SaveOutlined/>}
+                        >
+                            Speichern
+                        </Button>
+
+                        <Button
+                            color="error"
+                            variant="contained"
+                            type="reset"
+                            startIcon={<RestartAltOutlined/>}
+                            onClick={() => formik.resetForm()}
+                            sx={{
+                                mt: 2,
+                                [theme.breakpoints.up('sm')]: {
+                                    mt: 0,
+                                    ml: 2,
+                                },
+                            }}
+                        >
+                            Zurücksetzen
+                        </Button>
+                    </Box>
                 </form>
             </Box>
         </Box>

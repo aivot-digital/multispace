@@ -32,7 +32,7 @@ MULTISPACE_HOST = os.getenv('MULTISPACE_HOST', 'http://localhost:8000')
 CSRF_TRUSTED_ORIGINS = [MULTISPACE_HOST]
 ALLOWED_HOSTS = ['*']
 
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_ALL_ORIGINS = DEBUG
 
 # Application definition
 
@@ -130,16 +130,16 @@ TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
-USE_TZ = False
+USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATIC_ROOT = path.join(BASE_DIR, 'static/')
 
-MEDIA_URL = 'media/'
+MEDIA_URL = '/media/'
 MEDIA_ROOT = path.join(BASE_DIR, 'media/')
 
 # Default primary key field type

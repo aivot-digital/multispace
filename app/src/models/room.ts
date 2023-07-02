@@ -12,3 +12,11 @@ export interface Room {
 
     floor: number;
 }
+
+export interface DisplayRoom extends Room {
+    is_blocked: boolean;
+}
+
+export function isDisplayRoom(obj: any): obj is DisplayRoom {
+    return obj != null && obj.is_blocked != null;
+}

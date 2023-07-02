@@ -1,5 +1,5 @@
 import {Alert, AlertTitle, Box, Tab, Tabs} from "@mui/material";
-import {useEffect, useReducer, useState} from "react";
+import {SyntheticEvent, useEffect, useState} from "react";
 import {Floor} from "../models/floor";
 import {
     DeskBookingsApiService,
@@ -9,31 +9,41 @@ import {
     RoomsApiService
 } from "../services/rest-api-service";
 import {useAppDispatch, useAppSelector} from "../hooks";
-import {addMessage, hideLoading, showLoading} from "../features/app";
+import {
+    addMessage,
+    hideLoading,
+    selectCurrentDate,
+    setCurrentDate,
+    setCurrentFloor,
+    setDisplayMode,
+    showLoading
+} from "../features/app";
 import {FloorPlan} from "../components/floor-plan";
 import {Calendar} from "../components/calendar";
 import {FloorList} from "../components/floor-list";
 import {Desk} from "../models/desk";
 import {Room} from "../models/room";
-import {DeskBooking} from "../models/desk-booking";
-import {RoomBooking} from "../models/room-booking";
+import {DeskBookingWithUser} from "../models/desk-booking";
+import {RoomBookingWithUser} from "../models/room-booking";
+import {useNavigate} from "react-router-dom";
 
 export function FloorsPage() {
     const dispatch = useAppDispatch();
+    const navigate = useNavigate();
     const userId = useAppSelector(state => state.user.userId);
 
-    const [currentDate, setCurrentDate] = useState(new Date());
+    const currentDate = useAppSelector(selectCurrentDate);
+    const displayMode = useAppSelector(state => state.app.displayMode);
+    const currentFloorId = useAppSelector(state => state.app.currentFloor);
 
     const [floors, setFloors] = useState<Floor[]>();
     const [desks, setDesks] = useState<Desk[]>([]);
-    const [desksBookings, setDeskBookings] = useState<DeskBooking[]>([]);
+    const [desksBookings, setDeskBookings] = useState<DeskBookingWithUser[]>([]);
     const [rooms, setRooms] = useState<Room[]>([]);
-    const [RoomBookings, setRoomBookings] = useState<RoomBooking[]>([]);
-
-    const [currentFloorId, setCurrentFloorId] = useState<number>();
-    const [showFloorPlan, toggleShowFloorPlan] = useReducer(p => !p, true);
+    const [roomBookings, setRoomBookings] = useState<RoomBookingWithUser[]>([]);
 
     const currentFloor = (floors ?? []).find(fl => fl.id === currentFloorId);
+
 
     useEffect(() => {
         dispatch(showLoading());
@@ -42,7 +52,9 @@ export function FloorsPage() {
             .then(res => {
                 setFloors(res.results);
                 if (res.results.length > 0) {
-                    setCurrentFloorId(res.results[0].id);
+                    if (currentFloorId == null || !res.results.some(f => f.id === currentFloorId)) {
+                        dispatch(setCurrentFloor(res.results[0].id));
+                    }
                 }
             })
             .catch(err => {
@@ -61,31 +73,60 @@ export function FloorsPage() {
 
     useEffect(() => {
         if (currentFloorId != null) {
-            DesksApiService.list({floor: currentFloorId.toString()})
-                .then(res => setDesks(res.results));
-            RoomsApiService.list({floor: currentFloorId.toString()})
-                .then(res => setRooms(res.results));
+            DesksApiService
+                .list({floor: currentFloorId})
+                .then(res => res.results)
+                .then(setDesks);
+
+            RoomsApiService
+                .list({floor: currentFloorId})
+                .then(res => res.results)
+                .then(setRooms);
         }
     }, [currentFloorId]);
 
     useEffect(() => {
         if (currentFloorId != null) {
-            DeskBookingsApiService.list({
-                floor: currentFloorId.toString(),
-                date__year: currentDate.getFullYear().toString(),
-                date__month: currentDate.getMonth().toString(),
-                date__day: currentDate.getDate().toString(),
-            })
-                .then(res => setDeskBookings(res.results));
-            RoomBookingsApiService.list({
-                floor: currentFloorId.toString(),
-                start__year: currentDate.getFullYear().toString(),
-                start__month: currentDate.getMonth().toString(),
-                start__day: currentDate.getDate().toString(),
-            })
-                .then(res => setRoomBookings(res.results));
+            DeskBookingsApiService
+                .listWithUsers({
+                    floor: currentFloorId.toString(),
+                    date__gte: currentDate.toISOString(),
+                    date__lte: currentDate.toISOString(),
+                })
+                .then(setDeskBookings);
+
+            RoomBookingsApiService
+                .listWithUsers({
+                    floor: currentFloorId.toString(),
+                    start__gte: new Date(
+                        currentDate.getFullYear(),
+                        currentDate.getMonth(),
+                        currentDate.getDate(),
+                        0, 0, 0, 0,
+                    ).toISOString(),
+                    start__lte: new Date(
+                        currentDate.getFullYear(),
+                        currentDate.getMonth(),
+                        currentDate.getDate(),
+                        23, 59, 59, 999,
+                    ).toISOString(),
+                })
+                .then(setRoomBookings);
         }
     }, [currentFloorId, currentDate]);
+
+
+    const handleSelectFloor = (floorId: number) => {
+        dispatch(setCurrentFloor(floorId));
+    };
+
+    const handleToggleShowFloorPlan = () => {
+        dispatch(setDisplayMode(displayMode === 'map' ? 'list' : 'map'))
+    };
+
+    const handleSetCurrentDate = (date: Date) => {
+        dispatch(setCurrentDate(date.toISOString()));
+    };
 
     if (floors == null) {
         return null;
@@ -108,7 +149,7 @@ export function FloorsPage() {
             <Box>
                 <Calendar
                     value={currentDate}
-                    onChange={setCurrentDate}
+                    onChange={handleSetCurrentDate}
                     paperProps={{sx: {mb: 3}}}
                 />
             </Box>
@@ -121,7 +162,7 @@ export function FloorsPage() {
             >
                 <Tabs
                     value={currentFloorId}
-                    onChange={(_, value) => setCurrentFloorId(value)}
+                    onChange={(_: SyntheticEvent, value: number) => handleSelectFloor(value)}
                 >
                     {
                         floors.map(floor => (
@@ -138,28 +179,36 @@ export function FloorsPage() {
             <Box
                 sx={{
                     mt: 4,
-                    height: 'calc(100vh - 560px)',
+                    height: '100vh',
                 }}
             >
                 {
                     currentFloor != null &&
-                    showFloorPlan &&
+                    displayMode === 'map' &&
                     <FloorPlan
                         floor={currentFloor}
                         desks={desks}
                         rooms={rooms}
-                        onSwitchLayout={toggleShowFloorPlan}
+                        deskBookings={desksBookings}
+                        roomBookings={roomBookings}
+                        onSwitchLayout={handleToggleShowFloorPlan}
+                        onDeskClick={desk => navigate(`/desks/${desk.id}`)}
+                        onRoomClick={room => navigate(`/rooms/${room.id}`)}
                     />
                 }
 
                 {
                     currentFloor != null &&
-                    !showFloorPlan &&
+                    displayMode === 'list' &&
                     <FloorList
                         floor={currentFloor}
                         desks={desks ?? []}
                         rooms={rooms ?? []}
-                        onSwitchLayout={toggleShowFloorPlan}
+                        deskBookings={desksBookings}
+                        roomBookings={roomBookings}
+                        onSwitchLayout={handleToggleShowFloorPlan}
+                        onDeskClick={desk => navigate(`/desks/${desk.id}`)}
+                        onRoomClick={room => navigate(`/rooms/${room.id}`)}
                     />
                 }
             </Box>
