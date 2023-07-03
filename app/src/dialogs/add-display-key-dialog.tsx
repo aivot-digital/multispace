@@ -1,4 +1,13 @@
-import {Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField} from "@mui/material";
+import {
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    FormControlLabel,
+    Switch,
+    TextField
+} from "@mui/material";
 import {useFormik} from "formik";
 import * as yup from "yup";
 import React from "react";
@@ -11,10 +20,13 @@ const validationSchema = yup.object({
         .required('Der Titel ist eine Pflichtangabe')
         .min(6, 'Der Titel muss aus mindestens 6 Zeichen bestehen')
         .max(191, 'Der Titel darf aus maximal 191 Zeichen bestehen'),
+    anonymous: yup
+        .boolean()
+        .defined(),
 });
 
 interface AddDisplayKeyDialogProps {
-    onAdd: (title: string) => void;
+    onAdd: (title: string, anonymous: boolean) => void;
     onClose: () => void;
 }
 
@@ -22,10 +34,11 @@ export function AddDisplayKeyDialog(props: AddDisplayKeyDialogProps) {
     const formik = useFormik({
         initialValues: {
             title: '',
+            anonymous: true,
         },
         validationSchema: validationSchema,
         onSubmit: (values) => {
-            props.onAdd(values.title);
+            props.onAdd(values.title, values.anonymous);
         },
     });
 
@@ -53,6 +66,20 @@ export function AddDisplayKeyDialog(props: AddDisplayKeyDialogProps) {
                         onChange={formik.handleChange}
                         error={formik.touched.title && Boolean(formik.errors.title)}
                         helperText={formik.touched.title && formik.errors.title}
+
+                        required
+                    />
+
+                    <FormControlLabel
+                        control={
+                            <Switch
+                                id="anonymous"
+                                name="anonymous"
+                                checked={formik.values.anonymous}
+                                onChange={formik.handleChange}
+                            />
+                        }
+                        label="Benutzernamen ausblenden"
                     />
                 </DialogContent>
 

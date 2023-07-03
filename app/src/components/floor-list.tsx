@@ -114,6 +114,18 @@ export function FloorList(props: FloorListProps) {
                                     key={room.id}
                                     onClick={() => props.onRoomClick(room)}
                                 >
+                                    <ListItemAvatar>
+                                        <Avatar
+                                            sx={{
+                                                backgroundColor: bookings.length > 0 ? theme.palette.warning.main : theme.palette.success.main,
+                                            }}
+                                        >
+                                            {
+                                                bookings.length > 0 ? <Bookmark/> : <BookmarkBorder/>
+                                            }
+                                        </Avatar>
+                                    </ListItemAvatar>
+
                                     <ListItemText>
                                         {room.name}
                                     </ListItemText>
@@ -136,14 +148,16 @@ export function FloorList(props: FloorListProps) {
                                                         <Avatar
                                                             sx={{
                                                                 backgroundColor: theme.palette.warning.main,
+                                                                width: '1.5em',
+                                                                height: '1.5em',
                                                             }}
                                                         >
-                                                            <Bookmark/>
+                                                            <Bookmark sx={{fontSize: '90%'}}/>
                                                         </Avatar>
                                                     </ListItemAvatar>
 
                                                     <ListItemText
-                                                        secondary={bk.user.username}
+                                                        secondary={<>Gebucht durch <strong>{bk.user.username}</strong></>}
                                                     >
                                                         {format(parseISO(bk.start), 'HH:mm')} - {format(parseISO(bk.end), 'HH:mm')} Uhr
                                                     </ListItemText>

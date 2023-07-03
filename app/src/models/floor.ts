@@ -7,6 +7,7 @@ export interface Floor {
     image: string;
     desk_count?: number;
     access_count?: number;
+    room_count?: number;
 }
 
 export interface DisplayFloor extends Floor {

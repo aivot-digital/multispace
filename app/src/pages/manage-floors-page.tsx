@@ -29,7 +29,8 @@ export function ManageFloorsPage() {
                 columLabels={[
                     'Bereichsname',
                     'Anzahl Tische',
-                    'Anazahl Zugangsberechtigt',
+                    'Anzahl Räume',
+                    'Anzahl Zugangsberechtigt',
                 ]}
                 data={floors}
                 cellBuilder={floor => (
@@ -46,6 +47,10 @@ export function ManageFloorsPage() {
 
                         <TableCell>
                             {floor.desk_count}
+                        </TableCell>
+
+                        <TableCell>
+                            {floor.room_count}
                         </TableCell>
 
                         <TableCell>

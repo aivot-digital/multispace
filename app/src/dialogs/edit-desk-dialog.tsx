@@ -8,12 +8,11 @@ const validationSchema = yup.object({
     name: yup
         .string()
         .defined()
-        .required('Der Name ist eine Pflichtangabe')
-        .min(3, 'Der Name des Tischs muss aus mindestens 3 Zeichen bestehen')
-        .min(32, 'Der Name des Tischs darf aus maximal 32 Zeichen bestehen'),
+        .required('Dies ist eine Pflichtangabe. Bitte füllen Sie das Feld entsprechend aus.')
+        .min(3, 'Der Name des Tischs muss aus mindestens 3 Zeichen bestehen.')
+        .max(32, 'Der Name des Tischs darf aus maximal 32 Zeichen bestehen.'),
     description: yup
-        .string()
-        .defined(),
+        .string(),
 });
 
 interface EditDeskDialogProps {
@@ -35,7 +34,7 @@ export function EditDeskDialog(props: EditDeskDialogProps) {
             props.onSave({
                 ...props.desk,
                 name: values.name,
-                description: values.description,
+                description: values.description ?? '',
             });
         },
     });
@@ -65,6 +64,8 @@ export function EditDeskDialog(props: EditDeskDialogProps) {
                         onChange={formik.handleChange}
                         error={formik.touched.name && Boolean(formik.errors.name)}
                         helperText={formik.touched.name && formik.errors.name}
+
+                        required
                     />
 
                     <TextField

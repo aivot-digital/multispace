@@ -59,7 +59,7 @@ export function ManageUsersPage() {
                 }]}
                 columLabels={[
                     'Benutzername',
-                    'Mitarbeiterstatus',
+                    'Rolle',
                 ]}
                 filterItem={(item, search) => item.username.toLowerCase().includes(search)}
                 data={users}
@@ -81,7 +81,7 @@ export function ManageUsersPage() {
                                     alignItems: 'center',
                                 }}
                             >
-                                <Tooltip title={user.is_staff ? 'Administrator' : 'Mitarbeiter'}>
+                                <Tooltip title={user.is_staff ? 'Administrator:in' : 'Mitarbeiter:in'}>
                                     <Icon color={user.is_staff ? 'success' : "disabled"}>
                                         <AccountCircleOutlined/>
                                     </Icon>
@@ -92,7 +92,7 @@ export function ManageUsersPage() {
                                     sx={{ml: 1}}
                                 >
                                     {
-                                        user.is_staff ? 'Administrator' : 'Mitarbeiter'
+                                        user.is_staff ? 'Administrator:in' : 'Mitarbeiter:in'
                                     }
                                 </Typography>
                             </Box>

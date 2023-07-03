@@ -143,6 +143,16 @@ export function DeskPage() {
                 </Box>
             </Box>
 
+            {
+                desk.description != null &&
+                desk.description.trim().length > 0 &&
+                <Box sx={{mt: 1}}>
+                    <Typography variant="body2">
+                        {desk.description}
+                    </Typography>
+                </Box>
+            }
+
             <Box sx={{mt: 4}}>
                 {
                     bookingForToday != null &&
@@ -170,7 +180,7 @@ export function DeskPage() {
                     <Alert severity="success">
                         <AlertTitle>Tisch frei</AlertTitle>
                         Dieser Tisch ist am <strong>{format(currentDate, 'dd.MM.yyyy')}</strong> noch frei.
-                        Buche diesen Tisch jetzt um am {format(currentDate, 'dd.MM.yyyy')} daran arbeiten zu können.
+                        Buchen Sie diesen Tisch jetzt um am {format(currentDate, 'dd.MM.yyyy')} daran zu arbeiten.
                     </Alert>
                 }
             </Box>

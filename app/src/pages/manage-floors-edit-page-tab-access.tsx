@@ -192,7 +192,7 @@ function SelectUserDialog(props: SelectUserDialogProps) {
                         severity="info"
                         sx={{mt: 2}}
                     >
-                        Bereits alle Nutzer hinzugefügt.
+                        Alle Nutzer:innen haben bereits Zugang zum Bereich.
                     </Alert>
                 }
             </DialogContent>

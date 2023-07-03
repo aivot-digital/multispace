@@ -130,6 +130,16 @@ export function RoomPage() {
                     </Box>
                 </Box>
 
+                {
+                    room.description != null &&
+                    room.description.trim().length > 0 &&
+                    <Box sx={{mt: 1}}>
+                        <Typography variant="body2">
+                            {room.description}
+                        </Typography>
+                    </Box>
+                }
+
                 <DayPlan
                     value={currentDate}
                     onChange={day => dispatch(setCurrentDate(day.toISOString()))}
