@@ -53,7 +53,8 @@ export function ManageFloorsEditPageTabCommon(props: ManageFloorsEditPageTabComm
             }
 
             if (isNewFloor) {
-                ApiService.postFormData<Floor>('floors/', data)
+                ApiService
+                    .postFormData<Floor>('floors/', data)
                     .then((res) => {
                         navigate('/manage-floors/edit/' + res.id);
                     })
@@ -70,7 +71,8 @@ export function ManageFloorsEditPageTabCommon(props: ManageFloorsEditPageTabComm
                         dispatch(hideLoading());
                     });
             } else {
-                ApiService.patchFormData<Floor>(`floors/${props.floor.id}/`, data)
+                ApiService
+                    .patchFormData<Floor>(`floors/${props.floor.id}/`, data)
                     .then((res) => {
                         props.onChange(res);
                     })
@@ -85,6 +87,12 @@ export function ManageFloorsEditPageTabCommon(props: ManageFloorsEditPageTabComm
                     })
                     .finally(() => {
                         dispatch(hideLoading());
+                        dispatch(addMessage({
+                            id: 'floor_saved',
+                            title: 'Bereich gespeichert',
+                            message: 'Bereich wurde erfolgreich gespeichert.',
+                            severity: 'success',
+                        }));
                     });
             }
         },

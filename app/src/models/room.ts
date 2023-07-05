@@ -15,6 +15,7 @@ export interface Room {
 
 export interface DisplayRoom extends Room {
     is_blocked: boolean;
+    booking_user?: string;
 }
 
 export function isDisplayRoom(obj: any): obj is DisplayRoom {

@@ -1,4 +1,4 @@
-import {createAsyncThunk, createSlice} from '@reduxjs/toolkit'
+import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit'
 import {User} from "../models/user";
 import {ApiService} from "../services/api-service";
 import {Credentials} from "../models/credentials";
@@ -20,10 +20,6 @@ const initialState: UserState = {
     userId: localStorage.getItem('userId') != null ? parseInt(localStorage.getItem('userId')!) : undefined,
 };
 
-export const authenticate = createAsyncThunk('user/authenticate', async (payload: Credentials) => {
-    return await ApiService.post<Credentials, AuthData>('auth/', payload);
-});
-
 export const fetchUser = createAsyncThunk('user/fetchUser', async (payload: number) => {
     return await UserApiService.retrieve(payload);
 });
@@ -40,6 +36,15 @@ export const userSlice = createSlice({
     name: 'user',
     initialState: initialState,
     reducers: {
+        authenticate: (state, action: PayloadAction<AuthData>) => {
+            state.userId = action.payload.user_id;
+            state.token = action.payload.token;
+            state.user = undefined;
+
+            localStorage.setItem('token', action.payload.token);
+            localStorage.setItem('userId', action.payload.user_id.toString());
+        },
+
         logout: (state) => {
             state.userId = undefined;
             state.user = undefined;
@@ -51,23 +56,6 @@ export const userSlice = createSlice({
     },
     extraReducers: builder => {
         builder
-            .addCase(authenticate.fulfilled, (state, action) => {
-                state.userId = action.payload.user_id;
-                state.token = action.payload.token;
-                state.user = undefined;
-
-                localStorage.setItem('token', action.payload.token);
-                localStorage.setItem('userId', action.payload.user_id.toString());
-            })
-            .addCase(authenticate.rejected, (state, action) => {
-                state.userId = undefined;
-                state.token = undefined;
-                state.user = undefined;
-
-                localStorage.removeItem('token');
-                localStorage.removeItem('userId');
-            })
-
             .addCase(fetchUser.fulfilled, (state, action) => {
                 state.user = action.payload;
             })
@@ -89,10 +77,9 @@ export const userSlice = createSlice({
     },
 });
 
-export const selectUserConfig = (key: string, def?: string) => (state: RootState) => state.user.config == null ? def : (state.user.config[key] ?? def);
-
 export const {
     logout,
+    authenticate,
 } = userSlice.actions;
 
 export const userReducer = userSlice.reducer;

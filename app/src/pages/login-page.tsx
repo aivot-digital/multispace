@@ -6,6 +6,9 @@ import {useFormik} from "formik";
 import LoginBackground from '../assets/login-background.jpg';
 import {Helmet} from "react-helmet";
 import {ArrowForward} from "@mui/icons-material";
+import {ApiService} from "../services/api-service";
+import {Credentials} from "../models/credentials";
+import {AuthData} from "../models/auth_data";
 
 const validationSchema = yup.object({
     username: yup
@@ -28,10 +31,14 @@ export function LoginPage({brand}: { brand: string }) {
         },
         validationSchema: validationSchema,
         onSubmit: (values) => {
-            dispatch(authenticate({
-                username: values.username,
-                password: values.password,
-            }));
+            ApiService
+                .post<Credentials, AuthData>('auth/', {username: values.username, password: values.password})
+                .then(res => dispatch(authenticate(res)))
+                .catch(err => {
+                    console.error(err);
+                    formik.setFieldError('username', 'Benutzername oder Passwort falsch');
+                    formik.setFieldError('password', 'Benutzername oder Passwort falsch');
+                })
         },
     });
 

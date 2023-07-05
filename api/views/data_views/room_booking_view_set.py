@@ -13,6 +13,9 @@ class RoomBookingViewSet(viewsets.ModelViewSet):
         'room__floor',
         'user',
     ]
+    permission_classes = [
+        permissions.IsAuthenticated,
+    ]
 
     def get_queryset(self):
         user: User = self.request.user
@@ -35,13 +38,3 @@ class RoomBookingViewSet(viewsets.ModelViewSet):
             query = query.filter(room__floor__accesses__user=user)
 
         return query.order_by('start')
-
-    def get_permissions(self):
-        if self.action in ['create', 'update', 'partial_update', 'destroy']:
-            return [
-                permissions.IsAdminUser(),
-            ]
-        else:
-            return [
-                permissions.IsAuthenticated(),
-            ]

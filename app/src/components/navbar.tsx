@@ -77,7 +77,6 @@ export function Navbar() {
                             </Button>
                         }
 
-
                         {
 
                             breakpointMdAndUp &&
@@ -220,7 +219,11 @@ export function Navbar() {
                     </MenuItem>
                 }
 
-                <Divider/>
+                {
+                    user &&
+                    user.is_staff &&
+                    <Divider/>
+                }
 
                 <MenuItem
                     onClick={() => {

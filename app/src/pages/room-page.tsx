@@ -6,7 +6,7 @@ import {FloorApiService, RoomBookingsApiService, RoomsApiService} from "../servi
 import {Floor} from "../models/floor";
 import {RoomBookingWithUser} from "../models/room-booking";
 import {useAppDispatch, useAppSelector} from "../hooks";
-import {selectCurrentDate, setCurrentDate} from "../features/app";
+import {addMessage, selectCurrentDate, setCurrentDate} from "../features/app";
 import {endOfWeek, format, formatISO, parseISO, startOfWeek} from "date-fns";
 import {DayPlan} from "../components/day-plan";
 import {BookmarkAddOutlined} from "@mui/icons-material";
@@ -21,8 +21,8 @@ export function RoomPage() {
     const dispatch = useAppDispatch();
 
     const currentDate = useAppSelector(selectCurrentDate);
-    const firstDayInWeek = useMemo(() => startOfWeek(currentDate), [currentDate]);
-    const lastDayInWeek = useMemo(() => endOfWeek(currentDate), [currentDate]);
+    const firstDayInWeek = useMemo(() => startOfWeek(currentDate, {weekStartsOn: 1}), [currentDate]);
+    const lastDayInWeek = useMemo(() => endOfWeek(currentDate, {weekStartsOn: 1}), [currentDate]);
 
     const userId = useAppSelector(state => state.user.userId);
     const user = useAppSelector(state => state.user.user);
@@ -70,7 +70,16 @@ export function RoomPage() {
             start: formatISO(start),
             end: formatISO(end),
         })
-            .then(res => setBookings([...bookings, {...res, user: user!}]));
+            .then(res => setBookings([...bookings, {...res, user: user!}]))
+            .catch(err => {
+                console.error(err);
+                dispatch(addMessage({
+                    id: 'booking_failed',
+                    title: 'Raumbuchung konnte nicht angelegt werden',
+                    message: 'Die Raumbuchung konnte nicht angelegt werden. Der Raum ist im angegebenen Zeitraum bereits gebucht.',
+                    severity: 'error',
+                }));
+            });
         toggleBookingDialog();
     };
 
@@ -158,12 +167,14 @@ export function RoomPage() {
                 />
             </Box>
 
-            <BookRoomDialog
-                room={room}
-                show={showBookingDialog}
-                onClose={toggleBookingDialog}
-                onBook={handleAddBooking}
-            />
+            {
+                showBookingDialog &&
+                <BookRoomDialog
+                    room={room}
+                    onClose={toggleBookingDialog}
+                    onBook={handleAddBooking}
+                />
+            }
 
             <ConfirmDialog
                 title="Buchung löschen"

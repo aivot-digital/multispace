@@ -109,17 +109,29 @@ export function FloorPlan(props: FloorPlanProps) {
                     <Layer>
                         {
                             props.rooms.map(room => {
-                                const bookings = (props.roomBookings ?? []).filter(bk => bk.room === room.id);
+                                let isBooked = false;
+                                let bookingDescription = undefined;
+                                if (isDisplayRoom(room)) {
+                                    isBooked = room.is_blocked;
+                                    bookingDescription = room.booking_user;
+                                } else if (props.roomBookings != null) {
+                                    const bookings = (props.roomBookings ?? []).filter(bk => bk.room === room.id);
+                                    isBooked = bookings.length > 0;
+                                    if (bookings.length > 0) {
+                                        bookingDescription = '\n' + bookings.map(bk => `${format(parseISO(bk.start), 'HH:mm')} - ${format(parseISO(bk.end), 'HH:mm')}`).join('\n')
+                                    }
+                                }
+
                                 return (
                                     <ItemRect
                                         key={room.id}
                                         item={room}
-                                        color={bookings.length > 0 || (isDisplayRoom(room) && room.is_blocked) ? theme.palette.warning.main : theme.palette.info.main}
+                                        color={isBooked ? theme.palette.warning.main : theme.palette.info.main}
                                         onClick={props.onRoomClick}
                                         onChange={props.onChangeRooms != null ? (updatedRoom) => {
                                             props.onChangeRooms!((props.rooms ?? []).map(d => d === room ? updatedRoom : d));
                                         } : undefined}
-                                        subtext={bookings.length > 0 ? '\n' + bookings.map(bk => `${format(parseISO(bk.start), 'HH:mm')} - ${format(parseISO(bk.end), 'HH:mm')}`).join('\n') : undefined}
+                                        subtext={bookingDescription}
                                     />
                                 );
                             })
@@ -132,17 +144,29 @@ export function FloorPlan(props: FloorPlanProps) {
                     <Layer>
                         {
                             props.desks.map(desk => {
-                                const booking = (props.deskBookings ?? []).find(bk => bk.desk === desk.id);
+                                let isBooked = false;
+                                let bookingUsername = undefined;
+                                if (isDisplayDesk(desk)) {
+                                    isBooked = desk.is_blocked;
+                                    bookingUsername = desk.booking_user;
+                                } else if (props.deskBookings != null) {
+                                    const booking = props.deskBookings.find(bk => bk.desk === desk.id);
+                                    isBooked = booking != null;
+                                    if (booking != null) {
+                                        bookingUsername = booking.user.username;
+                                    }
+                                }
+
                                 return (
                                     <ItemRect
                                         key={desk.id}
                                         item={desk}
-                                        color={booking != null || (isDisplayDesk(desk) && desk.is_blocked) ? theme.palette.warning.main : theme.palette.info.main}
+                                        color={isBooked ? theme.palette.warning.main : theme.palette.info.main}
                                         onClick={props.onDeskClick}
                                         onChange={props.onChangeDesks != null ? (updatedDesk) => {
                                             props.onChangeDesks!((props.desks ?? []).map(d => d === desk ? updatedDesk : d));
                                         } : undefined}
-                                        subtext={booking != null ? booking.user.username : undefined}
+                                        subtext={bookingUsername}
                                     />
                                 );
                             })

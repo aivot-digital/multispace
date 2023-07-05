@@ -25,13 +25,14 @@ export function ManageFloorsEditPageTabDisplays(props: ManageFloorsEditPageTabDi
             500);
     }, []);
 
-    const handleAddDisplayKey = (title: string, anonymous: boolean) => {
+    const handleAddDisplayKey = (title: string, anonymous: boolean, listView: boolean) => {
         if (displayKeys != null) {
             DisplayKeysApiService.create({
                 id: '',
                 floor: props.floor.id,
                 title: title,
                 anonymous: anonymous,
+                list_view: listView,
             }).then(res => setDisplayKeys([...displayKeys, res]));
         }
         toggleShowAddDisplayDialog();

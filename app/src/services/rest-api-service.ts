@@ -81,7 +81,7 @@ class _FloorApiService extends RestApiService<Floor> {
         super('floors/');
     }
 
-    public async getDisplayFloor(key: string): Promise<DisplayFloor> {
+    public async getDisplayFloor(key: string): Promise<{display: DisplayKey, floor: DisplayFloor}> {
         return ApiService.get(`display/${key}/`);
     }
 

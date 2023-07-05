@@ -17,10 +17,10 @@ interface AppState {
 const initialState: AppState = {
     showLoading: false,
     messages: [],
-    currentDate: new Date().toISOString(),
-    displayMode: 'map',
-    calendarMinimized: false,
-    dayPlanMinimized: false,
+    currentDate: localStorage.getItem('currentDate') ?? new Date().toISOString(),
+    displayMode: (localStorage.getItem('displayMode') ?? 'map') as ('map' | 'list'),
+    calendarMinimized: localStorage.getItem('calendarMinimized') === 'yes',
+    dayPlanMinimized: localStorage.getItem('dayPlanMinimized') === 'yes',
 };
 
 export const appSlice = createSlice({
@@ -49,21 +49,31 @@ export const appSlice = createSlice({
 
         setCurrentDate: (state, action: PayloadAction<string>) => {
             state.currentDate = action.payload;
+
+            localStorage.setItem('currentDate', action.payload);
         },
 
         setDisplayMode: (state, action: PayloadAction<'map' | 'list'>) => {
             state.displayMode = action.payload;
+
+            localStorage.setItem('displayMode', action.payload);
         },
 
         setCurrentFloor: (state, action: PayloadAction<number>) => {
             state.currentFloor = action.payload;
+
+            localStorage.setItem('currentFloor', action.payload.toString());
         },
 
         toggleCalendarMinimized: (state) => {
             state.calendarMinimized = !state.calendarMinimized;
+
+            localStorage.setItem('calendarMinimized', state.calendarMinimized ? 'yes' : 'no');
         },
         toggleDayPlanMinimized: (state) => {
             state.dayPlanMinimized = !state.dayPlanMinimized;
+
+            localStorage.setItem('dayPlanMinimized', state.dayPlanMinimized ? 'yes' : 'no');
         },
     },
 });

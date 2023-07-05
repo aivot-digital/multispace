@@ -13,7 +13,9 @@ class DeskBookingViewSet(viewsets.ModelViewSet):
         'desk__floor',
         'user',
     ]
-    queryset = DeskBooking.objects.all()
+    permission_classes = [
+        permissions.IsAuthenticated,
+    ]
 
     def get_queryset(self):
         user: User = self.request.user
@@ -50,13 +52,3 @@ class DeskBookingViewSet(viewsets.ModelViewSet):
             query = query.filter(desk__floor__accesses__user=user)
 
         return query.order_by('date')
-
-    def get_permissions(self):
-        if self.action in ['create', 'update', 'partial_update', 'destroy']:
-            return [
-                permissions.IsAdminUser(),
-            ]
-        else:
-            return [
-                permissions.IsAuthenticated(),
-            ]

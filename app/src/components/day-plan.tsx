@@ -20,7 +20,7 @@ import {addDays, addWeeks, endOfWeek, format, isSameDay, startOfWeek, subDays, s
 import de from 'date-fns/locale/de';
 import {weekdays, weekdaysShort} from "../data/weekdays";
 import {useAppDispatch, useAppSelector} from "../hooks";
-import {toggleCalendarMinimized} from "../features/app";
+import {toggleDayPlanMinimized} from "../features/app";
 
 interface DayPlanProps<T extends { id: number }> {
     value: Date;
@@ -61,7 +61,7 @@ export function DayPlan<T extends { id: number }>(props: DayPlanProps<T>) {
 
     const today = new Date();
     const dispatch = useAppDispatch();
-    const isMinimized = useAppSelector(state => state.app.calendarMinimized);
+    const isMinimized = useAppSelector(state => state.app.dayPlanMinimized);
 
     const firstDayInWeek = startOfWeek(props.value, {
         locale: de,
@@ -75,7 +75,7 @@ export function DayPlan<T extends { id: number }>(props: DayPlanProps<T>) {
     const daysInWeek = isMinimized ? [props.value] : weekdays.map((_, index) => addDays(firstDayInWeek, index));
 
     const toggleIsMinimized = () => {
-        dispatch(toggleCalendarMinimized());
+        dispatch(toggleDayPlanMinimized());
     };
 
     const handleNext = () => {

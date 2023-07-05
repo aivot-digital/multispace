@@ -2,9 +2,9 @@ import {Room} from "../models/room";
 import {Button, Dialog, DialogActions, DialogContent, DialogTitle} from "@mui/material";
 import React from "react";
 import * as yup from "yup";
-import {DateTimePicker} from "@mui/x-date-pickers";
+import {DateTimePicker, TimePicker} from "@mui/x-date-pickers";
 import {useFormik} from "formik";
-import {addHours, differenceInMinutes, isBefore} from "date-fns";
+import {addHours, differenceInMinutes, format, isBefore} from "date-fns";
 import {useAppSelector} from "../hooks";
 import {selectCurrentDate} from "../features/app";
 
@@ -22,7 +22,6 @@ const validationSchema = yup.object({
 
 
 interface BookRoomDialogProps {
-    show: boolean;
     room: Room;
     onClose: () => void;
     onBook: (start: Date, end: Date) => void;
@@ -33,8 +32,8 @@ export function BookRoomDialog(props: BookRoomDialogProps) {
 
     const formik = useFormik({
         initialValues: {
-            start: currentDate,
-            end: addHours(currentDate, 1),
+            start: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 8, 0, 0, 0),
+            end: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 9, 0, 0, 0),
         },
         validationSchema: validationSchema,
         onSubmit: (values) => {
@@ -55,16 +54,16 @@ export function BookRoomDialog(props: BookRoomDialogProps) {
 
     return (
         <Dialog
-            open={props.show}
+            open={true}
             onClose={handleClose}
         >
             <DialogTitle>
-                {props.room.name} buchen
+                {props.room.name} für den {format(currentDate, 'dd.MM.yyyy')} buchen
             </DialogTitle>
 
             <form onSubmit={formik.handleSubmit}>
                 <DialogContent>
-                    <DateTimePicker
+                    <TimePicker
                         label="Start"
                         value={formik.values.start}
                         onChange={value => {
@@ -82,7 +81,7 @@ export function BookRoomDialog(props: BookRoomDialogProps) {
                             },
                         }}
                     />
-                    <DateTimePicker
+                    <TimePicker
                         label="Ende"
                         value={formik.values.end}
                         onChange={value => {

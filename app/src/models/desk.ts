@@ -15,6 +15,7 @@ export interface Desk {
 
 export interface DisplayDesk extends Desk {
     is_blocked: boolean;
+    booking_user?: string;
 }
 
 export function isDisplayDesk(obj: any): obj is DisplayDesk {

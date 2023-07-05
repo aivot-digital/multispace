@@ -7,3 +7,4 @@ class DisplayKeySerializer(serializers.ModelSerializer):
     class Meta:
         model = DisplayKey
         fields = '__all__'
+
