@@ -9,8 +9,8 @@ const validationSchema = yup.object({
         .string()
         .defined()
         .required('Dies ist eine Pflichtangabe. Bitte füllen Sie das Feld entsprechend aus.')
-        .min(3, 'Der Name des Tischs muss aus mindestens 3 Zeichen bestehen.')
-        .max(32, 'Der Name des Tischs darf aus maximal 32 Zeichen bestehen.'),
+        .min(3, 'Der Name des Raums muss aus mindestens 3 Zeichen bestehen.')
+        .max(32, 'Der Name des Raums darf aus maximal 32 Zeichen bestehen.'),
     description: yup
         .string(),
 });
