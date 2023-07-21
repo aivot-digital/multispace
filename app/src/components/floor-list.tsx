@@ -232,7 +232,7 @@ function RoomCard(props: { room: Room; onClick?: (room: Room) => void; bookings?
                 />
 
                 {
-                    blockings.length > 1 &&
+                    blockings.length > 0 &&
                     <CardContent>
                         <List disablePadding>
                             {
