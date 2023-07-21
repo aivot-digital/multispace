@@ -53,7 +53,7 @@ export function ManageFloorsEditPageTabDisplays(props: ManageFloorsEditPageTabDi
                     label: 'Anzeige hinzufügen',
                     onClick: toggleShowAddDisplayDialog,
                 }]}
-                columLabels={['Titel', 'Benutzernamen', 'Link']}
+                columLabels={['Titel', 'Benutzernamen', 'Modus', 'Link']}
                 data={displayKeys}
                 cellBuilder={dk => (
                     <>
@@ -63,6 +63,10 @@ export function ManageFloorsEditPageTabDisplays(props: ManageFloorsEditPageTabDi
 
                         <TableCell>
                             {dk.anonymous ? 'Ausblenden' : 'Anzeigen'}
+                        </TableCell>
+
+                        <TableCell>
+                            {dk.list_view ? 'Liste' : 'Raumplan'}
                         </TableCell>
 
                         <TableCell>
@@ -89,7 +93,7 @@ export function ManageFloorsEditPageTabDisplays(props: ManageFloorsEditPageTabDi
                     <AlertTitle>Keine Anzeigen vorhanden</AlertTitle>
                     Mit Anzeigen können Sie Bereiche zur Einsicht <u>ohne vorherige
                                                                      Authentifizierung</u> freigeben.
-                    Jede Anzeige hat einen einzigartigen Link, über den der bereich eingesehen werden kann.
+                    Jede Anzeige hat einen einzigartigen Link, über den der Bereich eingesehen werden kann.
                     Legen Sie einfach eine neue Anzeige an und teilen Sie den Link.
                     So können Sie Bereiche beispielsweise auf einem Monitor in Ihren Geschäftsräumen anzeigen
                     lassen.
