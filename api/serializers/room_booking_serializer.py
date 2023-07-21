@@ -17,9 +17,9 @@ class RoomBookingSerializer(serializers.ModelSerializer):
         ).filter(
             Q(
                 start__lte=data['start'],
-                end__gte=data['start'],
+                end__gt=data['start'],
             ) | Q(
-                start__gte=data['end'],
+                start__gt=data['end'],
                 end__lte=data['end'],
             )
         ).exists()

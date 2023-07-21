@@ -214,7 +214,11 @@ export function DayPlan<T extends { id: number }>(props: DayPlanProps<T>) {
                         {
                             businessHours.map(bh => (
                                 <TableRow key={bh.label}>
-                                    <TableCell>
+                                    <TableCell
+                                        sx={{
+                                            verticalAlign: 'top',
+                                        }}
+                                    >
                                         {bh.label}
                                     </TableCell>
                                     {
