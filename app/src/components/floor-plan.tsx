@@ -113,7 +113,7 @@ export function FloorPlan(props: FloorPlanProps) {
                                 let bookingDescription = undefined;
                                 if (isDisplayRoom(room)) {
                                     isBooked = room.is_blocked;
-                                    bookingDescription = room.booking_user;
+                                    bookingDescription = room.booking_user ?? 'Gebucht';
                                     if (room.is_blocked_from != null && room.is_blocked_until != null) {
                                         bookingDescription += '\n' + `${format(parseISO(room.is_blocked_from), 'HH:mm')} - ${format(parseISO(room.is_blocked_until), 'HH:mm')}`;
                                     }
