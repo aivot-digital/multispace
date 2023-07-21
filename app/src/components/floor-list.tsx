@@ -177,8 +177,8 @@ function RoomCard(props: { room: Room; onClick?: (room: Room) => void; bookings?
             isBlocked = true;
             blockedByUser = props.room.booking_user;
             blockings.push({
-                start: new Date(),
-                end: new Date(),
+                start: props.room.is_blocked_from!= null ? parseISO(props.room.is_blocked_from) : new Date(),
+                end: props.room.is_blocked_until != null ? parseISO(props.room.is_blocked_until) : new Date(),
                 user: props.room.booking_user,
             });
         }

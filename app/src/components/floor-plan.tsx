@@ -114,6 +114,9 @@ export function FloorPlan(props: FloorPlanProps) {
                                 if (isDisplayRoom(room)) {
                                     isBooked = room.is_blocked;
                                     bookingDescription = room.booking_user;
+                                    if (room.is_blocked_from != null && room.is_blocked_until != null) {
+                                        bookingDescription += '\n' + `${format(parseISO(room.is_blocked_from), 'HH:mm')} - ${format(parseISO(room.is_blocked_until), 'HH:mm')}`;
+                                    }
                                 } else if (props.roomBookings != null) {
                                     const bookings = (props.roomBookings ?? []).filter(bk => bk.room === room.id);
                                     isBooked = bookings.length > 0;
@@ -298,7 +301,7 @@ function ItemRect<T extends Desk | Room>(props: ItemRectProps<T>) {
                 height={props.item.height}
 
                 fill={props.color}
-                opacity={isHovered ? 0.25 : 0.5}
+                opacity={isHovered ? 0.25 : 0.85}
                 rotation={props.item.orientation}
 
                 x={props.item.pos_x}

@@ -12,13 +12,26 @@ class RoomSerializer(serializers.ModelSerializer):
 
 class RoomAnonymousDisplaySerializer(RoomSerializer):
     is_blocked = serializers.SerializerMethodField('get_is_blocked')
+    is_blocked_from = serializers.SerializerMethodField('get_is_blocked_from')
+    is_blocked_until = serializers.SerializerMethodField('get_is_blocked_until')
 
     def get_is_blocked(self, obj: Room):
+        return self._get_booking(obj).exists()
+
+    def get_is_blocked_from(self, obj: Room):
+        bk = self._get_booking(obj).first()
+        return bk.start if bk is not None else None
+
+    def get_is_blocked_until(self, obj: Room):
+        bk = self._get_booking(obj).first()
+        return bk.end if bk is not None else None
+
+    def _get_booking(self, obj: Room):
         now = timezone.now()
         return obj.bookings.filter(
             start__lte=now,
             end__gte=now,
-        ).exists()
+        )
 
 
 class RoomNeutralDisplaySerializer(RoomAnonymousDisplaySerializer):

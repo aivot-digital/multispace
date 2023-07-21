@@ -15,6 +15,8 @@ export interface Room {
 
 export interface DisplayRoom extends Room {
     is_blocked: boolean;
+    is_blocked_from: string;
+    is_blocked_until: string;
     booking_user?: string;
 }
 
