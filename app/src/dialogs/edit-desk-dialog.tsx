@@ -66,6 +66,10 @@ export function EditDeskDialog(props: EditDeskDialogProps) {
                         helperText={formik.touched.name && formik.errors.name}
 
                         required
+
+                        inputProps={{
+                            maxLength: 32,
+                        }}
                     />
 
                     <TextField
