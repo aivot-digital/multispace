@@ -31,12 +31,11 @@ Currently top secret. If you want to get an introduction into using MultiSpace c
 
 # Setup
 MultiSpace was developed as a cloud native application and works best with Docker.
-If you want to deploy MultiSpace without docker, read more at the [native setup section](./README.md#Native-Setup).
 
 
 ## Docker Setup
 If you have docker-compose installed, simply start the `docker-compose.yml` below by running `docker-compose up`.
-MultiSpace is now available at <http://localhost:8000>.
+MultiSpace is now available at <http://127.0.0.1:8000>.
 
 ```yaml
 # docker-compose.yml
@@ -48,107 +47,48 @@ services:
     environment:
       POSTGRES_DB: multispace
       POSTGRES_USER: multispace
-      POSTGRES_PASSWORD: multispaceftw1
+      POSTGRES_PASSWORD: multispace
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - ./pg:/var/lib/postgresql/data
+
   multispace:
-    image: ghcri.io/aivot-digital/multispace:latest
+    image: ghcr.io/aivot-digital/multispace:2.0.0
     restart: always
     depends_on:
       - db
+    volumes:
+      - ./media:/app/media
+      - static-volume:/app/static
+      - web-volume:/app/web
+      - run-volume:/app/run
     environment:
       MULTISPACE_PG_HOST: db
       MULTISPACE_PG_PORT: 5432
       MULTISPACE_PG_USER: multispace
-      MULTISPACE_PG_PASSWORD: multispaceftw1
+      MULTISPACE_PG_PASSWORD: multispace
       MULTISPACE_PG_DATABASE: multispace
-      MULTISPACE_HOST: 'http://localhost:8000'
+      MULTISPACE_HOST: 'http://127.0.0.1:8000'
       MULTISPACE_SECRET: '!!!!insecure-example-key-change-me!!!!'
+
+  web:
+    image: nginx
+    depends_on:
+      - multispace
+    volumes:
+      - ./media:/app/media:ro
+      - static-volume:/app/static:ro
+      - web-volume:/app/web:ro
+      - run-volume:/app/run:ro
+      - ./config/nginx.conf:/etc/nginx/conf.d/default.conf:ro
     ports:
-      - "8000:80"
+      - "8000:80/tcp"
+
+volumes:
+  web-volume:
+  static-volume:
+  run-volume:
 ```
-
-
-## Native Setup
-**The guide for a native setup was made for unix platforms only.**
-This results in the lack of support for the windows platform of gunicorn.
-
-
-### Prerequisites
-The native setup includes compiling the project and running it afterwards behind a nginx reverse proxy.
-MultiSpace depends on a set of open source tools and technologies to compile and run.
-
-- Python >= 3.9
-- Postgresql >= 14.2
-- gunicorn >= 20.1
-
-
-### Fetching dependencies
-After cloning this repository, open up a shell inside the root of the project.
-You should create a virtual environment and fetch all required dependencies.
-
-```bash
-python -m venv ./.venv
-source ./.venv/bin/activate
-pip install -r requirements.txt
-pip install gunicorn
-```
-
-
-### Configure nginx
-Replace you default nginx config file at `/etc/nginx/http.d/default.conf` with the following content:
-
-```
-server {
-    listen 80;
-
-    location /static/ {
-        root /path/to/the/cloned/repository;
-    }
-
-     location /media/ {
-        root /path/to/the/cloned/repository;
-    }
-
-    location / {
-        proxy_pass http://127.0.0.1:8000;
-        proxy_set_header Host $host;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
-}
-```
-
-
-### Running MultiSpace
-You need to perform several actions when running MultiSpace for the first time.
-
-```bash
-python manage.py collectstatic --no-input
-python manage.py migrate
-python manage.py createsuperuser
-```
-
-These commands will require you to create a new superuser account to manage your installation.
-After you've run the provision commands, you are required to configure the environment.
-Please set the following environment variables:
-
-* `MULTISPACE_PG_HOST` - The hostname of the postgres server e.g. `localhost`
-* `MULTISPACE_PG_PORT` - The port of the postgres server e.g. `5432`
-* `MULTISPACE_PG_USER` - The user to access the postgres server e.g. `multispace_database_user`
-* `MULTISPACE_PG_PASSWORD` - The password to access the postgres server e.g. `my-super-secret-password`
-* `MULTISPACE_PG_DATABASE` - The database of the postgres server to use for the MultiSpace insance e.g. `ms-database`
-* `MULTISPACE_HOST` - The hostname with protocol the MultiSpace server is access with e.g. `https://multispace.aivot.de`
-* `MULTISPACE_SECRET` - The secret for this MultiSpace instance. Please make sure to choose a random string with 64 characters or more. **This is really important and not settings this secret exposes your server to potential attackers**
-
-After you've set all required environment variables, you can start the MultiSpace server.
-Run the following command to start the MultiSpace:
-
-```bash
-gunicorn multispace.wsgi --bind 127.0.0.1:8000 --workers 3
-```
-
-The MultiSpace server should now be available at <http://localhost:8000>.
-
-
 
 
 # Documentation
