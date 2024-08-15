@@ -1,0 +1,51 @@
+version: '3.1'
+
+services:
+  database:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: multispace
+      POSTGRES_USER: multispace
+      POSTGRES_PASSWORD: multispaceftw1
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - ./pg:/var/lib/postgresql/data
+
+  multispace:
+    build:
+      context: .
+    restart: always
+    depends_on:
+      - database
+    volumes:
+      - ./media:/app/media
+      - static-volume:/app/static
+      - web-volume:/app/web
+      - run-volume:/app/run
+    environment:
+      MULTISPACE_PG_HOST: database
+      MULTISPACE_PG_PORT: 5432
+      MULTISPACE_PG_USER: multispace
+      MULTISPACE_PG_PASSWORD: multispaceftw1
+      MULTISPACE_PG_DATABASE: multispace
+      MULTISPACE_HOST: 'http://127.0.0.1:8000'
+      MULTISPACE_SECRET: '!!!!insecure-example-key-change-me!!!!'
+
+  web:
+    image: nginx
+    depends_on:
+      - multispace
+    volumes:
+      - ./media:/app/media:ro
+      - static-volume:/app/static:ro
+      - web-volume:/app/web:ro
+      - run-volume:/app/run:ro
+      - ./config/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    ports:
+      - "8000:80/tcp"
+
+volumes:
+  web-volume:
+  static-volume:
+  run-volume:
