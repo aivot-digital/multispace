@@ -10,7 +10,7 @@ work in a hybrid environment are easily accessible and bookable at any time.</p>
 
 <!-- Badges go here -->
 
-# What is MultiSpace?
+## What is MultiSpace?
 MultiSpace is a visual resource booking platform for quick and easy booking of work resources.  
 We enable organizations to:
 - work hybrid in flexible office environments
@@ -23,17 +23,11 @@ For more information visit us at <https://aivot.de/multispace>
 
 
 
-# Who uses MultiSpace?
-Currently top secret. If you want to get an introduction into using MultiSpace contact us at <https://aivot.de/kontakt>.
-
-
-
-
-# Setup
+## Setup
 MultiSpace was developed as a cloud native application and works best with Docker.
 
 
-## Docker Setup
+### Docker Setup
 If you have docker-compose installed, simply start the `docker-compose.yml` below by running `docker-compose up`.
 MultiSpace is now available at <http://127.0.0.1:8000>.
 
@@ -97,7 +91,7 @@ docker compose exec multispace python manage.py migrate
 docker compose exec multispace python manage.py createsuperuser
 ```
 
-# Documentation
+## Documentation
 Code documentation is stored in the project's [GitHub wiki](../../wiki) so that it is as close to the code as possible.
 
 If you are looking for end user documentation visit our [documentation overview](https://aivot.de/docs) and select
@@ -106,7 +100,7 @@ the respective project.
 
 
 
-# Contributing
+## Contributing
 Anyone can support us. There are many ways to contribute to MultiSpace. There is certainly one for you as well.
 
 | Support opportunity               | Remark                                                                                                                                                                                                                           |
@@ -122,25 +116,25 @@ Anyone can support us. There are many ways to contribute to MultiSpace. There is
 
 
 
-# Changelog
+## Changelog
 Please refer to the [changelog](./CHANGELOG.md) for details of what has changed.
 
 
 
 
-# Roadmap
+## Roadmap
 Future functionalities and improvements in prioritized order can be found in the project's [roadmap](https://aivot.de/roadmaps).
 
 
 
 
-# License
+## License
 This project is licensed under the terms of the [Business Source License](./LICENSE.md).
 
 
 
 
-# Sponsoring services
+## Sponsoring services
 These great services sponsor Aivot's core infrastructure:
 
 [<img loading="lazy" alt="GitHub" src="https://github.githubassets.com/images/modules/logos_page/GitHub-Logo.png" height="25">](https://github.com/)
